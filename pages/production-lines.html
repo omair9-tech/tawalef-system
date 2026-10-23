@@ -1,0 +1,647 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#17365d">
+    <title>الخطوط الإنتاجية | نظام التوالف</title>
+
+    <link rel="stylesheet" href="../CSS/style.css">
+
+    <style>
+        .lines-container {
+            width: min(100% - 24px, 1000px);
+            margin: 24px auto;
+        }
+
+        .lines-panel {
+            background: var(--card-bg, #fff);
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px #00000010;
+        }
+
+        .lines-panel h2 {
+            margin-top: 0;
+            color: #17365d;
+        }
+
+        .line-form {
+            display: grid;
+            grid-template-columns: 1fr auto auto;
+            gap: 10px;
+            align-items: end;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .field label {
+            font-weight: bold;
+        }
+
+        .field input,
+        .search-input {
+            width: 100%;
+            min-width: 0;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font: inherit;
+            box-sizing: border-box;
+        }
+
+        .action-button {
+            border: 0;
+            border-radius: 8px;
+            padding: 12px 16px;
+            font: inherit;
+            cursor: pointer;
+            color: #fff;
+            background: #17365d;
+        }
+
+        .action-button:disabled {
+            opacity: .6;
+            cursor: not-allowed;
+        }
+
+        .cancel-button {
+            background: #666;
+        }
+
+        .edit-button {
+            background: #176b87;
+            padding: 8px 12px;
+        }
+
+        .delete-button {
+            background: #b42318;
+            padding: 8px 12px;
+        }
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .lines-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 460px;
+        }
+
+        .lines-table th,
+        .lines-table td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #e5e5e5;
+            text-align: right;
+        }
+
+        .lines-table th {
+            background: #17365d;
+            color: #fff;
+        }
+
+        .row-actions {
+            display: flex;
+            gap: 7px;
+            flex-wrap: wrap;
+        }
+
+        .message {
+            display: none;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 12px 0;
+            line-height: 1.7;
+            overflow-wrap: anywhere;
+        }
+
+        .message.success {
+            display: block;
+            background: #e8f7ed;
+            color: #176b35;
+        }
+
+        .message.error {
+            display: block;
+            background: #fdecec;
+            color: #a21c1c;
+        }
+
+        .message.info {
+            display: block;
+            background: #eaf3ff;
+            color: #174a7e;
+        }
+
+        .empty-message {
+            text-align: center;
+            padding: 24px;
+            color: #666;
+        }
+
+        .page-description {
+            line-height: 1.8;
+            color: #555;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 16px;
+            color: #17365d;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        @media (max-width: 650px) {
+            .line-form {
+                grid-template-columns: 1fr;
+            }
+
+            .lines-panel {
+                padding: 14px;
+            }
+
+            .action-button {
+                width: 100%;
+            }
+
+            .row-actions .action-button {
+                width: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="top-header">
+    <div class="brand">
+        <div class="brand-icon">خ</div>
+        <div>
+            <h1>الخطوط الإنتاجية</h1>
+            <p>إدارة أسماء الخطوط المستخدمة في تسجيل التوالف</p>
+        </div>
+    </div>
+</header>
+
+<main class="lines-container">
+
+    <a class="back-link" href="../index.html">← العودة إلى الصفحة الرئيسية</a>
+
+    <section class="lines-panel">
+        <h2 id="formTitle">إضافة خط إنتاجي</h2>
+
+        <p class="page-description">
+            أضف اسم الخط الإنتاجي الذي تريد استخدامه عند تسجيل التوالف،
+            أو اختر أحد الخطوط الموجودة لتعديل اسمه.
+        </p>
+
+        <div id="message" class="message" role="status" aria-live="polite"></div>
+
+        <form id="lineForm" class="line-form">
+            <div class="field">
+                <label for="lineName">اسم الخط الإنتاجي</label>
+                <input
+                    id="lineName"
+                    name="lineName"
+                    type="text"
+                    maxlength="150"
+                    placeholder="اكتب اسم الخط الإنتاجي"
+                    autocomplete="off"
+                    required
+                >
+            </div>
+
+            <button id="saveButton" class="action-button" type="submit">
+                إضافة الخط
+            </button>
+
+            <button
+                id="cancelButton"
+                class="action-button cancel-button"
+                type="button"
+                hidden
+            >
+                إلغاء التعديل
+            </button>
+        </form>
+    </section>
+
+    <section class="lines-panel">
+        <h2>الخطوط الإنتاجية المسجلة</h2>
+
+        <div class="field" style="margin-bottom: 16px;">
+            <label for="searchInput">البحث عن خط</label>
+            <input
+                id="searchInput"
+                class="search-input"
+                type="search"
+                placeholder="اكتب اسم الخط للبحث..."
+                autocomplete="off"
+            >
+        </div>
+
+        <div class="table-wrapper">
+            <table class="lines-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>اسم الخط الإنتاجي</th>
+                        <th>الإجراءات</th>
+                    </tr>
+                </thead>
+
+                <tbody id="linesTableBody">
+                    <tr>
+                        <td colspan="3" class="empty-message">
+                            جارٍ تحميل الخطوط...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+</main>
+
+<footer class="footer">
+    <p>نظام التوالف — إدارة بيانات الإنتاج</p>
+    <p>تصميم م/عمير نجيب | 779503801</p>
+</footer>
+
+<script src="../JS/database.js"></script>
+
+<script>
+(function () {
+    "use strict";
+
+    const form = document.getElementById("lineForm");
+    const nameInput = document.getElementById("lineName");
+    const saveButton = document.getElementById("saveButton");
+    const cancelButton = document.getElementById("cancelButton");
+    const formTitle = document.getElementById("formTitle");
+    const tableBody = document.getElementById("linesTableBody");
+    const searchInput = document.getElementById("searchInput");
+    const messageBox = document.getElementById("message");
+
+    let lines = [];
+    let editingKey = null;
+    let busy = false;
+
+    function getLineName(record) {
+        return String(
+            record.name ||
+            record.lineName ||
+            record.productionLineName ||
+            record.title ||
+            ""
+        ).trim();
+    }
+
+    function showMessage(text, type) {
+        messageBox.textContent = text;
+        messageBox.className = "message " + type;
+    }
+
+    function clearMessage() {
+        messageBox.textContent = "";
+        messageBox.className = "message";
+    }
+
+    function setBusy(value) {
+        busy = value;
+        saveButton.disabled = value;
+        cancelButton.disabled = value;
+    }
+
+    function resetForm() {
+        editingKey = null;
+        form.reset();
+        formTitle.textContent = "إضافة خط إنتاجي";
+        saveButton.textContent = "إضافة الخط";
+        cancelButton.hidden = true;
+        clearMessage();
+    }
+
+    function makeKey(storeName, id) {
+        return storeName + ":" + String(id);
+    }
+
+    async function loadLines() {
+        try {
+            await TawalefDB.initialize();
+
+            const results = await Promise.all([
+                TawalefDB.getAll("manufacturing"),
+                TawalefDB.getAll("packaging")
+            ]);
+
+            lines = [];
+
+            [
+                { storeName: "manufacturing", records: results[0] || [] },
+                { storeName: "packaging", records: results[1] || [] }
+            ].forEach(function (group) {
+                group.records.forEach(function (record) {
+                    const name = getLineName(record);
+
+                    if (!name || record.id === undefined || record.id === null) {
+                        return;
+                    }
+
+                    lines.push({
+                        key: makeKey(group.storeName, record.id),
+                        storeName: group.storeName,
+                        id: record.id,
+                        name: name,
+                        record: record
+                    });
+                });
+            });
+
+            lines.sort(function (a, b) {
+                return a.name.localeCompare(b.name, "ar");
+            });
+
+            renderLines();
+        } catch (error) {
+            console.error("خطأ في تحميل الخطوط الإنتاجية:", error);
+
+            tableBody.innerHTML = "";
+
+            const row = document.createElement("tr");
+            const cell = document.createElement("td");
+
+            cell.colSpan = 3;
+            cell.className = "empty-message";
+            cell.textContent =
+                "تعذّر تحميل الخطوط: " +
+                (error.message || "خطأ غير معروف");
+
+            row.appendChild(cell);
+            tableBody.appendChild(row);
+
+            showMessage(
+                "تحقق من تحميل ملف JS/database.js ومن تشغيل الصفحة عبر بيئة المشروع.",
+                "error"
+            );
+        }
+    }
+
+    function renderLines() {
+        const search = searchInput.value.trim().toLocaleLowerCase("ar");
+
+        const filtered = lines.filter(function (line) {
+            return line.name.toLocaleLowerCase("ar").includes(search);
+        });
+
+        tableBody.innerHTML = "";
+
+        if (filtered.length === 0) {
+            const row = document.createElement("tr");
+            const cell = document.createElement("td");
+
+            cell.colSpan = 3;
+            cell.className = "empty-message";
+            cell.textContent = search
+                ? "لا توجد خطوط تطابق كلمة البحث."
+                : "لا توجد خطوط إنتاجية مسجلة حتى الآن.";
+
+            row.appendChild(cell);
+            tableBody.appendChild(row);
+            return;
+        }
+
+        filtered.forEach(function (line, index) {
+            const row = document.createElement("tr");
+
+            const numberCell = document.createElement("td");
+            numberCell.textContent = String(index + 1);
+
+            const nameCell = document.createElement("td");
+            nameCell.textContent = line.name;
+
+            const actionsCell = document.createElement("td");
+            const actions = document.createElement("div");
+            actions.className = "row-actions";
+
+            const editButton = document.createElement("button");
+            editButton.type = "button";
+            editButton.className = "action-button edit-button";
+            editButton.textContent = "تعديل";
+            editButton.addEventListener("click", function () {
+                startEditing(line.key);
+            });
+
+            const deleteButton = document.createElement("button");
+            deleteButton.type = "button";
+            deleteButton.className = "action-button delete-button";
+            deleteButton.textContent = "حذف";
+            deleteButton.addEventListener("click", function () {
+                deleteLine(line.key);
+            });
+
+            actions.appendChild(editButton);
+            actions.appendChild(deleteButton);
+            actionsCell.appendChild(actions);
+
+            row.appendChild(numberCell);
+            row.appendChild(nameCell);
+            row.appendChild(actionsCell);
+
+            tableBody.appendChild(row);
+        });
+    }
+
+    function startEditing(key) {
+        const line = lines.find(function (item) {
+            return item.key === key;
+        });
+
+        if (!line) {
+            showMessage("لم يتم العثور على الخط المطلوب تعديله.", "error");
+            return;
+        }
+
+        editingKey = line.key;
+        nameInput.value = line.name;
+        formTitle.textContent = "تعديل اسم الخط الإنتاجي";
+        saveButton.textContent = "حفظ التعديلات";
+        cancelButton.hidden = false;
+
+        clearMessage();
+        nameInput.focus();
+
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function isDuplicateName(name, currentKey) {
+        return lines.some(function (line) {
+            return line.key !== currentKey &&
+                line.name.toLocaleLowerCase("ar") ===
+                name.toLocaleLowerCase("ar");
+        });
+    }
+
+    async function saveLine(event) {
+        event.preventDefault();
+
+        if (busy) return;
+
+        const name = nameInput.value.trim();
+
+        if (!name) {
+            showMessage("اكتب اسم الخط الإنتاجي أولاً.", "error");
+            nameInput.focus();
+            return;
+        }
+
+        if (isDuplicateName(name, editingKey)) {
+            showMessage("هذا الاسم مسجل بالفعل ضمن الخطوط الإنتاجية.", "error");
+            return;
+        }
+
+        setBusy(true);
+        clearMessage();
+
+        try {
+            if (editingKey) {
+                const line = lines.find(function (item) {
+                    return item.key === editingKey;
+                });
+
+                if (!line) {
+                    throw new Error("لم يتم العثور على الخط المطلوب تعديله.");
+                }
+
+                const updatedData = Object.assign(
+                    {},
+                    line.record,
+                    {
+                        name: name,
+                        updatedAt: new Date().toISOString()
+                    }
+                );
+
+                await TawalefDB.update(
+                    line.storeName,
+                    line.id,
+                    updatedData
+                );
+
+                resetForm();
+                showMessage("تم تعديل اسم الخط بنجاح.", "success");
+            } else {
+                /*
+                 * تُحفظ الخطوط الجديدة في المخزن القديم حتى نُبقي
+                 * قاعدة البيانات متوافقة مع بقية صفحات النظام.
+                 */
+                await TawalefDB.add("manufacturing", {
+                    name: name,
+                    createdAt: new Date().toISOString()
+                });
+
+                resetForm();
+                showMessage("تمت إضافة الخط الإنتاجي بنجاح.", "success");
+            }
+
+            await loadLines();
+        } catch (error) {
+            console.error("خطأ في حفظ الخط:", error);
+            showMessage(
+                error.message || "تعذّر حفظ الخط الإنتاجي.",
+                "error"
+            );
+        } finally {
+            setBusy(false);
+        }
+    }
+
+    async function deleteLine(key) {
+        if (busy) return;
+
+        const line = lines.find(function (item) {
+            return item.key === key;
+        });
+
+        if (!line) {
+            showMessage("لم يتم العثور على الخط المطلوب حذفه.", "error");
+            return;
+        }
+
+        const confirmed = window.confirm(
+            'هل أنت متأكد من حذف الخط "' + line.name + '"؟'
+        );
+
+        if (!confirmed) return;
+
+        setBusy(true);
+        clearMessage();
+
+        try {
+            const records = await TawalefDB.getAll("wastage");
+
+            const isUsed = (records || []).some(function (record) {
+                const sameId = String(record.lineId) === String(line.id);
+
+                if (!sameId) return false;
+
+                /*
+                 * السجلات الجديدة والقديمة قد تستخدم processType
+                 * لتحديد المخزن الذي جاء منه الخط.
+                 */
+                if (record.processType) {
+                    return record.processType === line.storeName;
+                }
+
+                return true;
+            });
+
+            if (isUsed) {
+                showMessage(
+                    "لا يمكن حذف هذا الخط لأنه مرتبط بسجل توالف. يمكنك تعديل اسمه بدلاً من حذفه.",
+                    "error"
+                );
+                return;
+            }
+
+            await TawalefDB.remove(line.storeName, line.id);
+
+            if (editingKey === line.key) {
+                resetForm();
+            }
+
+            await loadLines();
+            showMessage("تم حذف الخط بنجاح.", "success");
+        } catch (error) {
+            console.error("خطأ في حذف الخط:", error);
+
+            showMessage(
+                error.message || "تعذّر حذف الخط الإنتاجي.",
+                "error"
+            );
+        } finally {
+            setBusy(false);
+        }
+    }
+
+    form.addEventListener("submit", saveLine);
+
+    cancelButton.addEventListener("click", resetForm);
+
+    searchInput.addEventListener("input", renderLines);
+
+    loadLines();
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,637 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة الأصناف - نظام التوالف</title>
+
+    <link rel="stylesheet" href="../CSS/style.css">
+
+    <style>
+        .items-page {
+            width: 100%;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 16px;
+            box-sizing: border-box;
+        }
+
+        .page-heading {
+            margin-bottom: 20px;
+        }
+
+        .page-heading h1 {
+            margin: 0 0 8px;
+            font-size: clamp(22px, 4vw, 30px);
+        }
+
+        .page-heading p {
+            margin: 0;
+            color: #666;
+            line-height: 1.8;
+        }
+
+        .panel {
+            background: #fff;
+            border: 1px solid #e3e7ec;
+            border-radius: 14px;
+            padding: 18px;
+            margin-bottom: 18px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+        }
+
+        .panel h2 {
+            font-size: 19px;
+            margin: 0 0 16px;
+        }
+
+        .field-label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .text-field {
+            display: block;
+            width: 100%;
+            min-height: 46px;
+            padding: 11px 12px;
+            border: 1px solid #cbd3dc;
+            border-radius: 9px;
+            box-sizing: border-box;
+            font: inherit;
+            background: #fff;
+        }
+
+        .text-field:focus {
+            outline: 2px solid rgba(23, 54, 93, 0.15);
+            border-color: #17365d;
+        }
+
+        .form-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .btn {
+            min-height: 43px;
+            border: 0;
+            border-radius: 9px;
+            padding: 10px 16px;
+            font: inherit;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: #17365d;
+            color: #fff;
+        }
+
+        .btn-secondary {
+            background: #e9edf2;
+            color: #263746;
+        }
+
+        .btn-danger {
+            background: #b42318;
+            color: #fff;
+        }
+
+        .btn-small {
+            min-height: 36px;
+            padding: 7px 11px;
+            font-size: 14px;
+        }
+
+        .message {
+            display: none;
+            padding: 12px;
+            margin-bottom: 16px;
+            border-radius: 9px;
+            line-height: 1.7;
+        }
+
+        .message.show {
+            display: block;
+        }
+
+        .message.success {
+            color: #17643a;
+            background: #e9f8ef;
+        }
+
+        .message.error {
+            color: #9d1c16;
+            background: #fff0ef;
+        }
+
+        .search-box {
+            margin-bottom: 14px;
+        }
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+        }
+
+        .items-table {
+            width: 100%;
+            min-width: 520px;
+            border-collapse: collapse;
+            background: #fff;
+        }
+
+        .items-table th,
+        .items-table td {
+            padding: 12px 10px;
+            text-align: right;
+            border-bottom: 1px solid #e8ebef;
+            vertical-align: middle;
+        }
+
+        .items-table th {
+            background: #f1f4f8;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .items-table tbody tr:last-child td {
+            border-bottom: 0;
+        }
+
+        .items-table td.actions {
+            white-space: nowrap;
+        }
+
+        .empty-state {
+            padding: 24px;
+            text-align: center;
+            color: #777;
+        }
+
+        .counter {
+            display: inline-block;
+            margin-bottom: 14px;
+            padding: 6px 11px;
+            border-radius: 20px;
+            background: #edf3fa;
+            color: #17365d;
+            font-weight: 700;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 16px;
+            color: #17365d;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        @media (max-width: 480px) {
+            .items-page {
+                padding: 10px;
+            }
+
+            .panel {
+                padding: 13px;
+            }
+
+            .form-actions .btn {
+                flex: 1 1 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="items-page">
+        <a class="back-link" href="../index.html">→ العودة إلى الصفحة الرئيسية</a>
+
+        <header class="page-heading">
+            <h1>إدارة الأصناف</h1>
+            <p>
+                أضف أسماء الأصناف التي تُنتجها المنشأة، وعدّلها أو ابحث عنها
+                لاستخدامها لاحقًا عند تسجيل التوالف.
+            </p>
+        </header>
+
+        <div id="pageMessage" class="message" role="status" aria-live="polite"></div>
+
+        <section class="panel">
+            <h2 id="formTitle">إضافة صنف جديد</h2>
+
+            <form id="itemForm">
+                <label class="field-label" for="itemName">اسم الصنف</label>
+
+                <input
+                    id="itemName"
+                    class="text-field"
+                    type="text"
+                    maxlength="150"
+                    placeholder="مثال: بسكويت، عصير، كعك..."
+                    autocomplete="off"
+                    required
+                >
+
+                <div class="form-actions">
+                    <button id="saveButton" class="btn btn-primary" type="submit">
+                        إضافة الصنف
+                    </button>
+
+                    <button
+                        id="cancelButton"
+                        class="btn btn-secondary"
+                        type="button"
+                        hidden
+                    >
+                        إلغاء التعديل
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <section class="panel">
+            <h2>الأصناف المسجلة</h2>
+
+            <div id="itemsCounter" class="counter">عدد الأصناف: 0</div>
+
+            <div class="search-box">
+                <label class="field-label" for="searchItem">البحث عن صنف</label>
+                <input
+                    id="searchItem"
+                    class="text-field"
+                    type="search"
+                    placeholder="اكتب اسم الصنف للبحث..."
+                    autocomplete="off"
+                >
+            </div>
+
+            <div class="table-wrapper">
+                <table class="items-table">
+                    <thead>
+                        <tr>
+                            <th>م</th>
+                            <th>اسم الصنف</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="itemsTableBody">
+                        <tr>
+                            <td colspan="3" class="empty-state">
+                                جارٍ تحميل الأصناف...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <script src="../JS/database.js"></script>
+
+    <script>
+        "use strict";
+
+        (function () {
+            const form = document.getElementById("itemForm");
+            const nameInput = document.getElementById("itemName");
+            const searchInput = document.getElementById("searchItem");
+            const tableBody = document.getElementById("itemsTableBody");
+            const counter = document.getElementById("itemsCounter");
+            const message = document.getElementById("pageMessage");
+            const formTitle = document.getElementById("formTitle");
+            const saveButton = document.getElementById("saveButton");
+            const cancelButton = document.getElementById("cancelButton");
+
+            let items = [];
+            let editingId = null;
+            let messageNumber = 0;
+
+            function normalizeName(value) {
+                return String(value || "")
+                    .trim()
+                    .replace(/\s+/g, " ")
+                    .toLocaleLowerCase("ar");
+            }
+
+            function showMessage(text, type) {
+                messageNumber++;
+
+                message.textContent = text;
+                message.className = "message show " + type;
+            }
+
+            function clearMessage() {
+                message.textContent = "";
+                message.className = "message";
+            }
+
+            async function loadItems() {
+                try {
+                    items = await TawalefDB.getAll("items");
+
+                    items.sort(function (a, b) {
+                        return String(a.name || "").localeCompare(
+                            String(b.name || ""),
+                            "ar"
+                        );
+                    });
+
+                    renderItems();
+                } catch (error) {
+                    console.error("خطأ في تحميل الأصناف:", error);
+
+                    tableBody.innerHTML = "";
+
+                    const row = document.createElement("tr");
+                    const cell = document.createElement("td");
+
+                    cell.colSpan = 3;
+                    cell.className = "empty-state";
+                    cell.textContent = "تعذر تحميل الأصناف. تحقق من قاعدة البيانات.";
+
+                    row.appendChild(cell);
+                    tableBody.appendChild(row);
+
+                    showMessage(
+                        "حدث خطأ أثناء تحميل الأصناف: " +
+                        (error.message || "خطأ غير معروف"),
+                        "error"
+                    );
+                }
+            }
+
+            function createButton(text, className, action, id) {
+                const button = document.createElement("button");
+
+                button.type = "button";
+                button.textContent = text;
+                button.className = "btn btn-small " + className;
+
+                button.addEventListener("click", function () {
+                    action(id);
+                });
+
+                return button;
+            }
+
+            function renderItems() {
+                const query = normalizeName(searchInput.value);
+
+                const filteredItems = items.filter(function (item) {
+                    return normalizeName(item.name).includes(query);
+                });
+
+                counter.textContent =
+                    "عدد الأصناف: " + items.length +
+                    (query ? " | نتائج البحث: " + filteredItems.length : "");
+
+                tableBody.innerHTML = "";
+
+                if (filteredItems.length === 0) {
+                    const row = document.createElement("tr");
+                    const cell = document.createElement("td");
+
+                    cell.colSpan = 3;
+                    cell.className = "empty-state";
+                    cell.textContent = query
+                        ? "لا توجد أصناف مطابقة للبحث."
+                        : "لم تتم إضافة أي صنف حتى الآن.";
+
+                    row.appendChild(cell);
+                    tableBody.appendChild(row);
+                    return;
+                }
+
+                filteredItems.forEach(function (item, index) {
+                    const row = document.createElement("tr");
+
+                    const numberCell = document.createElement("td");
+                    numberCell.textContent = String(index + 1);
+
+                    const nameCell = document.createElement("td");
+                    nameCell.textContent = item.name || "";
+
+                    const actionsCell = document.createElement("td");
+                    actionsCell.className = "actions";
+
+                    actionsCell.appendChild(
+                        createButton(
+                            "تعديل",
+                            "btn-secondary",
+                            startEditing,
+                            item.id
+                        )
+                    );
+
+                    actionsCell.appendChild(
+                        createButton(
+                            "حذف",
+                            "btn-danger",
+                            deleteItem,
+                            item.id
+                        )
+                    );
+
+                    row.appendChild(numberCell);
+                    row.appendChild(nameCell);
+                    row.appendChild(actionsCell);
+
+                    tableBody.appendChild(row);
+                });
+            }
+
+            function resetForm() {
+                editingId = null;
+                form.reset();
+
+                formTitle.textContent = "إضافة صنف جديد";
+                saveButton.textContent = "إضافة الصنف";
+                cancelButton.hidden = true;
+
+                clearMessage();
+                nameInput.focus();
+            }
+
+            function startEditing(id) {
+                const item = items.find(function (entry) {
+                    return Number(entry.id) === Number(id);
+                });
+
+                if (!item) {
+                    showMessage("لم يتم العثور على الصنف المطلوب.", "error");
+                    return;
+                }
+
+                editingId = item.id;
+                nameInput.value = item.name || "";
+
+                formTitle.textContent = "تعديل الصنف";
+                saveButton.textContent = "حفظ التعديلات";
+                cancelButton.hidden = false;
+
+                clearMessage();
+
+                document.querySelector(".page-heading").scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                });
+
+                nameInput.focus();
+            }
+
+            async function deleteItem(id) {
+                const item = items.find(function (entry) {
+                    return Number(entry.id) === Number(id);
+                });
+
+                if (!item) {
+                    showMessage("لم يتم العثور على الصنف المطلوب.", "error");
+                    return;
+                }
+
+                try {
+                    // لا نحذف صنفًا مرتبطًا بسجل توالف.
+                    const records = await TawalefDB.getAll("wastage");
+
+                    const isUsed = records.some(function (record) {
+                        return String(record.itemId) === String(item.id);
+                    });
+
+                    if (isUsed) {
+                        showMessage(
+                            "لا يمكن حذف هذا الصنف لأنه مرتبط بسجلات توالف. يمكنك تعديل اسمه بدلًا من حذفه.",
+                            "error"
+                        );
+                        return;
+                    }
+
+                    if (!window.confirm(
+                        'هل تريد حذف الصنف "' + item.name + '"؟'
+                    )) {
+                        return;
+                    }
+
+                    await TawalefDB.remove("items", item.id);
+
+                    if (Number(editingId) === Number(item.id)) {
+                        resetForm();
+                    }
+
+                    await loadItems();
+                    showMessage("تم حذف الصنف بنجاح.", "success");
+                } catch (error) {
+                    console.error("خطأ في حذف الصنف:", error);
+
+                    showMessage(
+                        "تعذر حذف الصنف: " +
+                        (error.message || "خطأ غير معروف"),
+                        "error"
+                    );
+                }
+            }
+
+            form.addEventListener("submit", async function (event) {
+                event.preventDefault();
+                clearMessage();
+
+                const name = nameInput.value.trim();
+
+                if (!name) {
+                    showMessage("يرجى إدخال اسم الصنف.", "error");
+                    nameInput.focus();
+                    return;
+                }
+
+                const normalized = normalizeName(name);
+
+                const duplicate = items.some(function (item) {
+                    return (
+                        normalizeName(item.name) === normalized &&
+                        Number(item.id) !== Number(editingId)
+                    );
+                });
+
+                if (duplicate) {
+                    showMessage("هذا الصنف مسجل بالفعل.", "error");
+                    nameInput.focus();
+                    return;
+                }
+
+                saveButton.disabled = true;
+
+                try {
+                    if (editingId !== null) {
+                        const existing = items.find(function (item) {
+                            return Number(item.id) === Number(editingId);
+                        });
+
+                        if (!existing) {
+                            throw new Error("الصنف المطلوب تعديله غير موجود.");
+                        }
+
+                        await TawalefDB.update("items", editingId, {
+                            name: name,
+                            updatedAt: new Date().toISOString()
+                        });
+
+                        resetForm();
+                        await loadItems();
+
+                        showMessage("تم تعديل الصنف بنجاح.", "success");
+                    } else {
+                        await TawalefDB.add("items", {
+                            name: name,
+                            createdAt: new Date().toISOString()
+                        });
+
+                        form.reset();
+                        await loadItems();
+
+                        showMessage("تمت إضافة الصنف بنجاح.", "success");
+                        nameInput.focus();
+                    }
+                } catch (error) {
+                    console.error("خطأ في حفظ الصنف:", error);
+
+                    showMessage(
+                        "تعذر حفظ الصنف: " +
+                        (error.message || "خطأ غير معروف"),
+                        "error"
+                    );
+                } finally {
+                    saveButton.disabled = false;
+                }
+            });
+
+            cancelButton.addEventListener("click", resetForm);
+
+            searchInput.addEventListener("input", renderItems);
+
+            async function startPage() {
+                try {
+                    await TawalefDB.initialize();
+                    await loadItems();
+                } catch (error) {
+                    console.error("تعذر تشغيل صفحة الأصناف:", error);
+
+                    showMessage(
+                        "تعذر تشغيل قاعدة البيانات: " +
+                        (error.message || "خطأ غير معروف"),
+                        "error"
+                    );
+                }
+            }
+
+            startPage();
+        })();
+    </script>
+</body>
+</html>

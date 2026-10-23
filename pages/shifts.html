@@ -1,0 +1,464 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الورديات | نظام التوالف</title>
+    <link rel="stylesheet" href="../CSS/style.css">
+
+    <style>
+        .panel {
+            background: white;
+            padding: 20px;
+            border: 1px solid #e1e7ef;
+            border-radius: 14px;
+            margin-bottom: 20px;
+        }
+
+        .panel h2 {
+            margin-top: 0;
+            color: #17365d;
+            font-size: 19px;
+        }
+
+        .field {
+            margin-bottom: 15px;
+        }
+
+        .field label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .field input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 9px;
+            font-family: inherit;
+            font-size: 16px;
+            min-height: 45px;
+        }
+
+        .btn {
+            border: none;
+            border-radius: 9px;
+            padding: 12px 16px;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: #17365d;
+            color: white;
+        }
+
+        .btn-light {
+            background: #e9f1fb;
+            color: #17365d;
+        }
+
+        .btn-danger {
+            background: #a83232;
+            color: white;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .table-wrap {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 440px;
+        }
+
+        th, td {
+            padding: 11px 9px;
+            border-bottom: 1px solid #e1e7ef;
+            text-align: right;
+            font-size: 13px;
+        }
+
+        th {
+            background: #e9f1fb;
+            color: #17365d;
+        }
+
+        td .btn {
+            margin: 2px;
+            padding: 7px 10px;
+            font-size: 12px;
+        }
+
+        .status {
+            margin-top: 12px;
+            padding: 11px;
+            border-radius: 8px;
+            font-size: 13px;
+            display: none;
+            overflow-wrap: anywhere;
+        }
+
+        .status.ok {
+            display: block;
+            background: #e8f7ee;
+            color: #17643a;
+        }
+
+        .status.err {
+            display: block;
+            background: #fdecec;
+            color: #922b2b;
+        }
+
+        .empty {
+            text-align: center;
+            color: #718096;
+            padding: 25px;
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="top-header">
+    <div class="brand">
+        <div class="brand-icon">🕒</div>
+        <div>
+            <h1>إدارة الورديات</h1>
+            <p>إضافة الورديات وتعديلها وحفظها</p>
+        </div>
+    </div>
+</header>
+
+<main class="container">
+
+    <a href="../index.html" class="page-back">→ العودة إلى الصفحة الرئيسية</a>
+
+    <section class="welcome">
+        <h2>الورديات</h2>
+        <p>أضف أسماء الورديات التي يستخدمها موظفو الإنتاج.</p>
+    </section>
+
+    <section class="panel">
+        <h2 id="formTitle">إضافة وردية جديدة</h2>
+
+        <form id="shiftForm">
+            <div class="field">
+                <label for="shiftName">اسم الوردية</label>
+                <input
+                    id="shiftName"
+                    type="text"
+                    maxlength="100"
+                    placeholder="مثال: الوردية الصباحية"
+                    required
+                >
+            </div>
+
+            <div class="actions">
+                <button type="submit" class="btn btn-primary" id="saveButton">
+                    حفظ الوردية
+                </button>
+
+                <button type="button" class="btn btn-light" id="cancelButton" hidden>
+                    إلغاء التعديل
+                </button>
+            </div>
+        </form>
+
+        <div id="formStatus" class="status" role="status"></div>
+    </section>
+
+    <section class="panel">
+        <h2>الورديات المسجلة</h2>
+
+        <p id="shiftCount">عدد الورديات: 0</p>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>الرقم</th>
+                        <th>اسم الوردية</th>
+                        <th>الإجراءات</th>
+                    </tr>
+                </thead>
+                <tbody id="shiftsTable">
+                    <tr>
+                        <td colspan="3" class="empty">جارٍ تحميل البيانات...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div id="tableStatus" class="status" role="status"></div>
+    </section>
+
+</main>
+
+<footer class="footer">
+    <p>نظام التوالف — إدارة الورديات</p>
+</footer>
+
+<script src="../JS/database.js"></script>
+
+<script>
+"use strict";
+
+const form = document.getElementById("shiftForm");
+const nameInput = document.getElementById("shiftName");
+const tableBody = document.getElementById("shiftsTable");
+const saveButton = document.getElementById("saveButton");
+const cancelButton = document.getElementById("cancelButton");
+
+let editingId = null;
+let busy = false;
+
+function showMessage(id, message, type) {
+    const element = document.getElementById(id);
+    element.textContent = message;
+    element.className = "status " + type;
+}
+
+function clearMessage(id) {
+    const element = document.getElementById(id);
+    element.textContent = "";
+    element.className = "status";
+}
+
+function resetForm() {
+    editingId = null;
+    form.reset();
+
+    document.getElementById("formTitle").textContent = "إضافة وردية جديدة";
+    saveButton.textContent = "حفظ الوردية";
+    cancelButton.hidden = true;
+
+    clearMessage("formStatus");
+}
+
+async function loadShifts() {
+    try {
+        const shifts = await TawalefDB.getAll("shifts");
+
+        shifts.sort(function (a, b) {
+            return a.id - b.id;
+        });
+
+        document.getElementById("shiftCount").textContent =
+            "عدد الورديات: " + shifts.length;
+
+        tableBody.replaceChildren();
+
+        if (shifts.length === 0) {
+            const row = document.createElement("tr");
+            const cell = document.createElement("td");
+
+            cell.colSpan = 3;
+            cell.className = "empty";
+            cell.textContent = "لا توجد ورديات مسجلة حتى الآن.";
+
+            row.appendChild(cell);
+            tableBody.appendChild(row);
+            return;
+        }
+
+        shifts.forEach(function (shift) {
+            const row = document.createElement("tr");
+
+            const idCell = document.createElement("td");
+            idCell.textContent = shift.id;
+
+            const nameCell = document.createElement("td");
+            nameCell.textContent = shift.name;
+
+            const actionCell = document.createElement("td");
+            const actions = document.createElement("div");
+            actions.className = "actions";
+
+            const editButton = document.createElement("button");
+            editButton.type = "button";
+            editButton.className = "btn btn-light";
+            editButton.textContent = "تعديل";
+
+            editButton.addEventListener("click", function () {
+                editingId = shift.id;
+                nameInput.value = shift.name;
+
+                document.getElementById("formTitle").textContent =
+                    "تعديل الوردية";
+
+                saveButton.textContent = "حفظ التعديلات";
+                cancelButton.hidden = false;
+
+                clearMessage("formStatus");
+
+                window.scrollTo({
+                    top: 0,
+                    behavior: "smooth"
+                });
+            });
+
+            const deleteButton = document.createElement("button");
+            deleteButton.type = "button";
+            deleteButton.className = "btn btn-danger";
+            deleteButton.textContent = "حذف";
+
+            deleteButton.addEventListener("click", async function () {
+                if (!confirm(
+                    "هل تريد حذف الوردية «" + shift.name + "»؟"
+                )) {
+                    return;
+                }
+
+                try {
+                    /*
+                     * سنضيف لاحقًا فحص الارتباطات قبل الحذف،
+                     * حتى لا نحذف وردية مستخدمة في سجلات التوالف.
+                     */
+                    await TawalefDB.remove("shifts", shift.id);
+
+                    if (editingId === shift.id) {
+                        resetForm();
+                    }
+
+                    await loadShifts();
+
+                    showMessage(
+                        "tableStatus",
+                        "تم حذف الوردية. تنبيه: لا تحذف وردية مرتبطة بسجلات سابقة.",
+                        "ok"
+                    );
+                } catch (error) {
+                    showMessage(
+                        "tableStatus",
+                        "تعذر حذف الوردية: " + error.message,
+                        "err"
+                    );
+                }
+            });
+
+            actions.append(editButton, deleteButton);
+            actionCell.appendChild(actions);
+
+            row.append(idCell, nameCell, actionCell);
+            tableBody.appendChild(row);
+        });
+    } catch (error) {
+        showMessage(
+            "tableStatus",
+            "تعذر تحميل الورديات: " + error.message,
+            "err"
+        );
+    }
+}
+
+form.addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    if (busy) {
+        return;
+    }
+
+    const name = nameInput.value.trim();
+
+    if (!name) {
+        showMessage("formStatus", "اكتب اسم الوردية.", "err");
+        return;
+    }
+
+    busy = true;
+    saveButton.disabled = true;
+
+    try {
+        const shifts = await TawalefDB.getAll("shifts");
+
+        const duplicate = shifts.some(function (shift) {
+            return shift.name.trim().toLowerCase() === name.toLowerCase()
+                && shift.id !== editingId;
+        });
+
+        if (duplicate) {
+            showMessage(
+                "formStatus",
+                "اسم الوردية موجود مسبقًا. اختر اسمًا آخر.",
+                "err"
+            );
+            return;
+        }
+
+        if (editingId === null) {
+            await TawalefDB.add("shifts", {
+                name: name,
+                createdAt: new Date().toISOString()
+            });
+
+            showMessage(
+                "formStatus",
+                "تمت إضافة الوردية وحفظها بنجاح.",
+                "ok"
+            );
+        } else {
+            await TawalefDB.update("shifts", {
+                id: editingId,
+                name: name
+            });
+
+            showMessage(
+                "formStatus",
+                "تم تعديل اسم الوردية بنجاح.",
+                "ok"
+            );
+        }
+
+        resetForm();
+        await loadShifts();
+    } catch (error) {
+        showMessage(
+            "formStatus",
+            "حدث خطأ أثناء الحفظ: " + error.message,
+            "err"
+        );
+    } finally {
+        busy = false;
+        saveButton.disabled = false;
+    }
+});
+
+cancelButton.addEventListener("click", resetForm);
+
+async function startPage() {
+    try {
+        await TawalefDB.initialize();
+        await loadShifts();
+    } catch (error) {
+        showMessage(
+            "tableStatus",
+            "تعذر تشغيل الصفحة: " + error.message,
+            "err"
+        );
+    }
+}
+
+startPage();
+</script>
+
+</body>
+</html>
