@@ -1,0 +1,256 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#17365d">
+
+    <title>التوالف | الصفحة الرئيسية</title>
+
+    <link rel="stylesheet" href="CSS/style.css">
+</head>
+
+<body>
+
+    <!-- رأس الصفحة -->
+    <header class="top-header">
+        <div class="brand">
+            <div class="brand-icon">ت</div>
+
+            <div>
+                <h1>نظام التوالف</h1>
+                <p>
+                    إدارة ومتابعة توالف الإنتاج
+                    <br>
+                    تصميم م/عمير نجيب
+                    <br>
+                    للتواصل والاستفسار: 779503801
+                </p>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <!-- الترحيب -->
+        <section class="welcome">
+            <h2>مرحباً بك في نظام إدارة التوالف</h2>
+            <p>
+                نظام لتنظيم بيانات الإنتاج وتسجيل التوالف
+                ومتابعة الكميات والتقارير.
+            </p>
+        </section>
+
+        <!-- ملخص الإحصائيات -->
+        <section class="summary-grid">
+
+            <div class="summary-card">
+                <span class="summary-icon">📋</span>
+                <div>
+                    <p>عدد سجلات التوالف</p>
+                    <strong id="totalWastage">0</strong>
+                </div>
+            </div>
+
+            <div class="summary-card">
+                <span class="summary-icon">📦</span>
+                <div>
+                    <p>عدد الأصناف</p>
+                    <strong id="totalManufacturing">0</strong>
+                </div>
+            </div>
+
+            <div class="summary-card">
+                <span class="summary-icon">♻️</span>
+                <div>
+                    <p>عدد أنواع التوالف</p>
+                    <strong id="totalPackaging">0</strong>
+                </div>
+            </div>
+
+            <div class="summary-card">
+                <span class="summary-icon">👥</span>
+                <div>
+                    <p>عدد الموظفين</p>
+                    <strong id="totalEmployees">0</strong>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- عنوان الأقسام -->
+        <section class="section-heading">
+            <h2>أقسام النظام</h2>
+            <p>اختر القسم الذي تريد العمل فيه</p>
+        </section>
+
+        <!-- قائمة الأقسام -->
+        <section class="menu-grid">
+
+            <!-- تسجيل التوالف -->
+            <a class="menu-card wastage-card"
+               href="pages/wastage.html">
+
+                <span class="menu-icon">📋</span>
+
+                <h3>التوالف</h3>
+
+                <p>
+                    تسجيل التوالف ومتابعة الكميات
+                    المسموح بها وغير المسموح بها.
+                </p>
+
+                <span class="card-arrow">←</span>
+            </a>
+
+            <!-- الأصناف -->
+            <a class="menu-card"
+               href="pages/items.html">
+
+                <span class="menu-icon">📦</span>
+
+                <h3>الأصناف</h3>
+
+                <p>
+                    إضافة أسماء الأصناف المنتجة
+                    وتعديلها وإدارتها.
+                </p>
+
+                <span class="card-arrow">←</span>
+            </a>
+
+            <!-- أنواع التوالف -->
+            <a class="menu-card"
+               href="pages/materials.html">
+
+                <span class="menu-icon">♻️</span>
+
+                <h3>أنواع التوالف</h3>
+
+                <p>
+                    إضافة أنواع التوالف وتعديلها
+                    وإدارتها وربطها بالموظفين.
+                </p>
+
+                <span class="card-arrow">←</span>
+            </a>
+
+<!-- إدارة الخطوط الإنتاجية -->
+<a class="menu-card" href="pages/production-lines.html">
+    <span class="menu-icon">🏭</span>
+    <h3>الخطوط الإنتاجية</h3>
+    <p>
+        عرض وإدارة أسماء خطوط التصنيع والتغليف
+        واستخدامها عند تسجيل التوالف.
+    </p>
+    <span class="card-arrow">←</span>
+</a>
+
+            <!-- الموظفون -->
+            <a class="menu-card"
+               href="pages/employees.html">
+
+                <span class="menu-icon">👷</span>
+
+                <h3>موظفو خط الإنتاج</h3>
+
+                <p>
+                    إضافة الموظفين وإدارة بياناتهم
+                    وتحديد أنواع التوالف المرتبطة بهم.
+                </p>
+
+                <span class="card-arrow">←</span>
+            </a>
+
+            <!-- المشرفون -->
+            <a class="menu-card"
+               href="pages/supervisors.html">
+
+                <span class="menu-icon">🧑‍💼</span>
+
+                <h3>مشرفو خط الإنتاج</h3>
+
+                <p>
+                    إضافة أسماء المشرفين
+                    وإدارة بياناتهم.
+                </p>
+
+                <span class="card-arrow">←</span>
+            </a>
+
+            <!-- الورديات -->
+            <a class="menu-card"
+               href="pages/shifts.html">
+
+                <span class="menu-icon">🕒</span>
+
+                <h3>الورديات</h3>
+
+                <p>
+                    إضافة الورديات وتنظيمها
+                    واستخدامها عند تسجيل التوالف.
+                </p>
+
+                <span class="card-arrow">←</span>
+            </a>
+
+            <!-- الإحصائيات -->
+            <a class="menu-card"
+               href="pages/statistics.html">
+
+                <span class="menu-icon">📊</span>
+
+                <h3>الإحصائيات والتقارير</h3>
+
+                <p>
+                    البحث في السجلات وعرض الإحصائيات
+                    وتصدير التقارير والصور.
+                </p>
+
+                <span class="card-arrow">←</span>
+            </a>
+
+            <!-- الإعدادات -->
+            <a class="menu-card settings-card"
+               href="pages/settings.html">
+
+                <span class="menu-icon">⚙️</span>
+
+                <h3>الإعدادات</h3>
+
+                <p>
+                    ضبط القيم الافتراضية
+                    وإنشاء النسخ الاحتياطية واستعادة البيانات.
+                </p>
+
+                <span class="card-arrow">←</span>
+            </a>
+
+        </section>
+
+        <!-- تنبيه -->
+        <section class="notice">
+            <strong>ملاحظة مهمة:</strong>
+
+            <p>
+                احرص على إنشاء نسخة احتياطية من بيانات النظام
+                بصورة منتظمة، واحتفظ بنسخة خارج مجلد المشروع
+                لتتمكن من استعادة بياناتك عند الحاجة.
+            </p>
+        </section>
+
+    </main>
+
+    <!-- تذييل الصفحة -->
+    <footer class="footer">
+        <p>نظام التوالف — إدارة بيانات الإنتاج</p>
+        <p>تصميم م/عمير نجيب | 779503801</p>
+    </footer>
+
+    <!-- ملفات JavaScript -->
+    <script src="JS/database.js"></script>
+    <script src="JS/app.js"></script>
+
+</body>
+</html>

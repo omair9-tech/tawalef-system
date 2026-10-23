@@ -1,0 +1,1189 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#111827">
+<title>الإحصائيات والتقارير | نظام التوالف</title>
+
+<style>
+@font-face{
+ font-family:ReportArabic;
+ src:url("../fonts/Cairo-Regular.ttf") format("truetype");
+ font-weight:400;font-display:swap
+}
+@font-face{
+ font-family:ReportArabic;
+ src:url("../fonts/Cairo-Bold.ttf") format("truetype");
+ font-weight:700;font-display:swap
+}
+:root{
+ --navy:#111827;--navy2:#263653;--gold:#c6a45b;
+ --gold-light:#f6edda;--bg:#f3f5f9;--white:#fff;
+ --text:#20283b;--muted:#747e91;--border:#e2e7ef;
+ --blue:#2839bd;--green:#137a52;--red:#bd3333;
+ --radius:16px
+}
+*{box-sizing:border-box}
+body{
+ margin:0;padding:18px;background:var(--bg);color:var(--text);
+ font-family:ReportArabic,Tahoma,Arial,sans-serif;line-height:1.75
+}
+button,input,select{font:inherit}
+button,.link-button{cursor:pointer}
+button:disabled{opacity:.6;cursor:wait}
+.container{max-width:1550px;margin:auto}
+.hero{
+ position:relative;overflow:hidden;padding:25px 26px;
+ border-radius:20px;background:linear-gradient(125deg,var(--navy),var(--navy2));
+ color:white;margin-bottom:18px;box-shadow:0 10px 28px #11182720
+}
+.hero:after{
+ content:"";position:absolute;width:180px;height:180px;
+ border:1px solid #c6a45b50;border-radius:50%;
+ left:-40px;top:-85px;pointer-events:none
+}
+.hero-top{
+ display:flex;justify-content:space-between;align-items:center;
+ gap:15px;flex-wrap:wrap
+}
+.eyebrow{color:#e6c982;font-size:12px}
+h1{font-size:clamp(23px,4vw,33px);margin:3px 0;color:white}
+.subtitle{margin:0;color:#d6dce8;font-size:13px}
+.link-button{
+ display:inline-flex;align-items:center;justify-content:center;
+ padding:9px 15px;border-radius:10px;text-decoration:none;
+ background:#ffffff14;color:white;border:1px solid #ffffff35;font-size:13px
+}
+.panel{
+ background:white;border:1px solid var(--border);border-radius:var(--radius);
+ padding:20px;margin-bottom:18px;box-shadow:0 5px 20px #15203a08
+}
+.section-title{font-size:18px;margin:0 0 4px;color:var(--navy)}
+.section-subtitle{font-size:12px;color:var(--muted);margin:0 0 17px}
+.filters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.field{min-width:0}
+.field label{
+ display:block;font-size:12px;font-weight:bold;
+ margin-bottom:5px;color:#4b5568
+}
+input,select{
+ width:100%;min-width:0;min-height:44px;padding:9px 11px;
+ border:1px solid #d8deea;border-radius:10px;background:#fff;
+ color:var(--text);font-size:13px;outline:none
+}
+input:focus,select:focus{
+ border-color:var(--gold);box-shadow:0 0 0 3px #c6a45b20
+}
+.buttons{display:flex;flex-wrap:wrap;gap:9px;margin-top:18px}
+.btn{
+ min-height:42px;padding:9px 14px;border-radius:10px;
+ border:1px solid transparent;font-size:12px;font-weight:bold;
+ display:inline-flex;align-items:center;justify-content:center;gap:7px
+}
+.btn-primary{background:var(--navy);color:#fff}
+.btn-primary:hover{background:#263653}
+.btn-gold{background:var(--gold-light);border-color:#ead9b4;color:#745820}
+.btn-light{background:#f4f6fa;border-color:#e2e7ef;color:#344056}
+.btn-green{background:#e6f5ed;border-color:#c9e8d8;color:#176a49}
+.btn-blue{background:#e9edff;border-color:#d8dfff;color:#2839a3}
+.message{
+ display:none;padding:12px 14px;border-radius:11px;
+ margin-bottom:14px;font-size:13px;overflow-wrap:anywhere
+}
+.message.success{display:block;background:#e8f7ee;color:#146b43;border:1px solid #ccebd8}
+.message.error{display:block;background:#fff0f0;color:#a32828;border:1px solid #f0d0d0}
+.message.info{display:block;background:#fff7e5;color:#765719;border:1px solid #efdfb9}
+.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin:17px 0 22px}
+.stat-card{
+ padding:17px;border:1px solid var(--border);border-radius:14px;
+ background:linear-gradient(145deg,#fff,#fafbfe);min-width:0;position:relative
+}
+.stat-card:before{
+ content:"";position:absolute;right:0;top:15px;bottom:15px;
+ width:3px;background:var(--gold);border-radius:3px
+}
+.stat-card span{display:block;color:var(--muted);font-size:12px}
+.stat-card strong{
+ display:block;font-size:clamp(22px,3vw,30px);
+ color:var(--navy);margin-top:5px;overflow-wrap:anywhere
+}
+.report-title{border-bottom:1px solid var(--border);padding-bottom:15px}
+.report-title h2{margin:0;color:var(--navy);font-size:23px}
+#reportPeriod{margin:4px 0 0;color:var(--muted);font-size:12px}
+.table-heading{font-size:16px;margin:0 0 12px;color:var(--navy)}
+.table-wrap{width:100%;overflow-x:auto;border:1px solid var(--border);border-radius:12px}
+table{border-collapse:collapse;width:100%;min-width:1150px;background:white}
+th,td{
+ padding:11px 10px;text-align:right;border-bottom:1px solid #e9edf3;
+ font-size:12px;white-space:nowrap
+}
+th{background:#f4f2eb;color:#4f442d;font-weight:bold}
+tbody tr:nth-child(even){background:#fafbfe}
+tbody tr:hover{background:#f5f7fc}
+.empty{text-align:center;padding:25px;color:var(--muted)}
+.footer-credit{
+ margin-top:20px;padding-top:14px;border-top:1px solid var(--border);
+ text-align:center;font-size:11px;color:var(--muted)
+}
+.small-note{font-size:11px;color:var(--muted);margin:10px 0 0}
+
+@media(max-width:1000px){
+ .filters{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:560px){
+ body{padding:9px}
+ .hero{padding:19px 15px;border-radius:15px}
+ .panel{padding:13px;border-radius:13px}
+ .filters,.cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+ .stat-card{padding:12px}
+ .stat-card span{font-size:11px}
+ .buttons .btn{flex:1 1 calc(50% - 9px);padding:9px 7px}
+ .hero-top .link-button{width:100%}
+}
+@media print{
+ @page{size:A4 landscape;margin:7mm}
+ body{padding:0;background:white;color:#000;font-family:ReportArabic,Tahoma,Arial,sans-serif}
+ .no-print,.hero .link-button,#message{display:none!important}
+ .hero{background:white;color:#000;box-shadow:none;padding:0;margin:0 0 8px;border-bottom:1px solid #777;border-radius:0}
+ .hero:after{display:none}
+ h1{color:#000;font-size:20px}
+ .eyebrow,.subtitle{color:#333}
+ .container{max-width:none;width:100%}
+ .panel{padding:5px 0;margin:0 0 8px;border:0;box-shadow:none}
+ .report-title h2{font-size:15px;color:#000}
+ .report-title{padding-bottom:5px}
+ #reportPeriod{color:#000}
+ .cards{grid-template-columns:repeat(4,1fr);gap:5px;margin:8px 0}
+ .stat-card{padding:5px;border:1px solid #aaa;background:#fff}
+ .stat-card:before{display:none}
+ .stat-card span{font-size:9px;color:#000}
+ .stat-card strong{font-size:15px;color:#000}
+ .table-heading{font-size:12px;margin-bottom:5px}
+ .table-wrap{overflow:visible;border:0}
+ table{min-width:0;width:100%;table-layout:auto}
+ th,td{font-size:7px;padding:4px 2px;white-space:normal;overflow-wrap:anywhere;color:#000;border:1px solid #aaa}
+ th{background:#eee!important}
+ tr{break-inside:avoid}
+ .footer-credit{font-size:8px;color:#000;margin-top:7px;padding-top:5px}
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<header class="hero">
+ <div class="hero-top">
+  <div>
+   <div class="eyebrow">نظام التوالف · التقارير الإدارية</div>
+   <h1>الإحصائيات والتقارير</h1>
+   <p class="subtitle">متابعة سجلات التوالف وتحليلها حسب التاريخ والوردية والموظف وخط الإنتاج.</p>
+  </div>
+  <a class="link-button no-print" href="../index.html">العودة إلى الرئيسية ←</a>
+ </div>
+</header>
+
+<div id="message" class="message no-print" role="status" aria-live="polite"></div>
+
+<section class="panel no-print">
+ <h2 class="section-title">تصفية التقرير</h2>
+ <p class="section-subtitle">حدد معايير البحث ثم اضغط على تطبيق الفلاتر.</p>
+
+ <div class="filters">
+  <div class="field">
+   <label for="dateFrom">من تاريخ</label>
+   <input type="date" id="dateFrom">
+  </div>
+  <div class="field">
+   <label for="dateTo">إلى تاريخ</label>
+   <input type="date" id="dateTo">
+  </div>
+  <div class="field">
+   <label for="shiftFilter">الوردية</label>
+   <select id="shiftFilter"><option value="">كل الورديات</option></select>
+  </div>
+  <div class="field">
+   <label for="employeeFilter">الموظف</label>
+   <select id="employeeFilter"><option value="">كل الموظفين</option></select>
+  </div>
+  <div class="field">
+   <label for="lineFilter">خط الإنتاج</label>
+   <select id="lineFilter"><option value="">كل خطوط الإنتاج</option></select>
+  </div>
+  <div class="field">
+   <label for="itemFilter">الصنف</label>
+   <select id="itemFilter"><option value="">كل الأصناف</option></select>
+  </div>
+  <div class="field">
+   <label for="wasteTypeFilter">نوع التالف</label>
+   <select id="wasteTypeFilter"><option value="">كل أنواع التوالف</option></select>
+  </div>
+ </div>
+
+ <div class="buttons">
+  <button class="btn btn-primary" id="applyFilters" type="button">تطبيق الفلاتر</button>
+  <button class="btn btn-light" id="clearFilters" type="button">مسح الفلاتر</button>
+  <button class="btn btn-gold" id="saveImage" type="button">حفظ الصورة PNG</button>
+  <button class="btn btn-light" id="shareImage" type="button">مشاركة الصورة</button>
+  <button class="btn btn-primary" id="savePdf" type="button">حفظ التقرير PDF</button>
+  <button class="btn btn-blue" id="sharePdf" type="button">مشاركة ملف PDF</button>
+  <button class="btn btn-green" id="printPdf" type="button">طباعة A4</button>
+  <button class="btn btn-gold" id="print58" type="button">طباعة حرارية 58 مم</button>
+  <button class="btn btn-gold" id="print80" type="button">طباعة حرارية 80 مم</button>
+ </div>
+
+ <p class="small-note">
+ إذا لم يدعم المتصفح مشاركة الملفات مباشرة، سيحاول تنزيل الملف لتتمكن من مشاركته من مدير الملفات.
+ الطباعة الحرارية تتطلب اختيار طابعة متصلة ومدعومة.
+ </p>
+</section>
+
+<section class="panel" id="reportArea">
+ <div class="report-title" id="reportHeading">
+  <h2>تقرير التوالف</h2>
+  <p id="reportPeriod">جميع السجلات</p>
+ </div>
+
+ <div class="cards">
+  <div class="stat-card"><span>عدد سجلات التوالف</span><strong id="totalRecords">0</strong></div>
+  <div class="stat-card"><span>إجمالي الكمية التالفة</span><strong id="totalQuantity">0</strong></div>
+  <div class="stat-card"><span>إجمالي التالف المسموح به</span><strong id="totalAllowed">0</strong></div>
+  <div class="stat-card"><span>إجمالي التالف غير المسموح به</span><strong id="totalDisallowed">0</strong></div>
+ </div>
+
+ <h2 class="table-heading">تفاصيل سجلات التوالف</h2>
+ <div class="table-wrap">
+  <table>
+   <thead>
+    <tr>
+     <th>التاريخ</th>
+     <th>الوردية</th>
+     <th>اسم الصنف</th>
+     <th>اسم الخط</th>
+     <th>نوع التالف</th>
+     <th>الكمية التالفة</th>
+     <th>التالف المسموح به</th>
+     <th>التالف غير المسموح به</th>
+     <th>اسم الموظف</th>
+     <th>اسم المشرف</th>
+    </tr>
+   </thead>
+   <tbody id="reportBody">
+    <tr><td colspan="10" class="empty">جارٍ تحميل البيانات...</td></tr>
+   </tbody>
+  </table>
+ </div>
+
+ <footer class="footer-credit">
+  إنشاء م/عمير نجيب للطلب والاستفسار التواصل على الرقم 779503801
+ </footer>
+</section>
+</div>
+
+<script src="../JS/database.js"></script>
+<script>
+"use strict";
+(() => {
+ const $ = id => document.getElementById(id);
+ const CREDIT = "إنشاء م/عمير نجيب للطلب والاستفسار التواصل على الرقم 779503801";
+
+ let allRecords = [];
+ let filteredRecords = [];
+ let shifts = [];
+ let employees = [];
+ let manufacturingLines = [];
+ let packagingLines = [];
+ let items = [];
+ let wasteTypes = [];
+
+ function numberValue(value) {
+  const n = Number(value);
+  return Number.isFinite(n) ? n : 0;
+ }
+
+ function fmt(value) {
+  return String(Number(numberValue(value).toFixed(6)));
+ }
+
+ function nameOf(record, keys, fallback = "—") {
+  for (const key of keys) {
+   if (record && record[key] !== undefined &&
+       record[key] !== null && String(record[key]).trim() !== "") {
+    return String(record[key]);
+   }
+  }
+  return fallback;
+ }
+
+ function idOf(record) {
+  return record && record.id !== undefined ? String(record.id) : "";
+ }
+
+ function message(text, type = "info") {
+  $("message").textContent = text;
+  $("message").className = "message no-print " + type;
+ }
+
+ function clearMessage() {
+  $("message").textContent = "";
+  $("message").className = "message no-print";
+ }
+
+ function fillFilter(id, list, defaultText, nameKeys) {
+  const select = $(id);
+  const oldValue = select.value;
+  select.replaceChildren();
+
+  const first = document.createElement("option");
+  first.value = "";
+  first.textContent = defaultText;
+  select.appendChild(first);
+
+  for (const record of list) {
+   const option = document.createElement("option");
+   option.value = idOf(record);
+   option.textContent = nameOf(record, nameKeys);
+   select.appendChild(option);
+  }
+
+  if ([...select.options].some(option => option.value === oldValue)) {
+   select.value = oldValue;
+  }
+ }
+
+ function fillLineFilter() {
+  const select = $("lineFilter");
+  const previous = select.value;
+  select.replaceChildren();
+
+  const first = document.createElement("option");
+  first.value = "";
+  first.textContent = "كل خطوط الإنتاج";
+  select.appendChild(first);
+
+  for (const line of manufacturingLines) {
+   const option = document.createElement("option");
+   option.value = "manufacturing:" + idOf(line);
+   option.textContent = nameOf(line, ["name", "lineName", "title"]);
+   select.appendChild(option);
+  }
+
+  for (const line of packagingLines) {
+   const option = document.createElement("option");
+   option.value = "packaging:" + idOf(line);
+   option.textContent = nameOf(line, ["name", "lineName", "title"]);
+   select.appendChild(option);
+  }
+
+  if ([...select.options].some(option => option.value === previous)) {
+   select.value = previous;
+  }
+ }
+
+ async function loadData() {
+  if (!window.TawalefDB) {
+   throw new Error("تعذر تحميل قاعدة البيانات. تحقق من مسار JS/database.js.");
+  }
+
+  await window.TawalefDB.initialize();
+
+  const result = await Promise.all([
+   window.TawalefDB.getAll("wastage"),
+   window.TawalefDB.getAll("shifts"),
+   window.TawalefDB.getAll("employees"),
+   window.TawalefDB.getAll("manufacturing"),
+   window.TawalefDB.getAll("packaging"),
+   window.TawalefDB.getAll("items"),
+   window.TawalefDB.getAll("materials")
+  ]);
+
+  [
+   allRecords, shifts, employees, manufacturingLines,
+   packagingLines, items, wasteTypes
+  ] = result.map(value => Array.isArray(value) ? value : []);
+
+  fillFilter("shiftFilter", shifts, "كل الورديات",
+   ["name", "shiftName", "title"]);
+
+  fillFilter("employeeFilter", employees, "كل الموظفين",
+   ["name", "employeeName"]);
+
+  fillFilter("itemFilter", items, "كل الأصناف",
+   ["name", "itemName", "title"]);
+
+  fillFilter("wasteTypeFilter", wasteTypes, "كل أنواع التوالف",
+   ["name", "wasteTypeName", "materialName", "title"]);
+
+  fillLineFilter();
+  applyFilters();
+ }
+
+ function passesFilters(record) {
+  const from = $("dateFrom").value;
+  const to = $("dateTo").value;
+  const shift = $("shiftFilter").value;
+  const employee = $("employeeFilter").value;
+  const line = $("lineFilter").value;
+  const item = $("itemFilter").value;
+  const wasteType = $("wasteTypeFilter").value;
+
+  if (from && String(record.date || "") < from) return false;
+  if (to && String(record.date || "") > to) return false;
+
+  if (shift && String(record.shiftId ?? "") !== shift) return false;
+  if (employee && String(record.employeeId ?? "") !== employee) return false;
+  if (item && String(record.itemId ?? "") !== item) return false;
+
+  if (line) {
+   const separator = line.indexOf(":");
+   const selectedType = line.slice(0, separator);
+   const selectedId = line.slice(separator + 1);
+   const recordLineId = String(record.lineId ?? "");
+
+   if (recordLineId !== selectedId) return false;
+
+   /*
+    * نوع الخط لم يعد فلترًا مستقلًا.
+    * نستخدم نوع الخط داخليًا فقط لتمييز الخطوط إذا كانت
+    * السجلات تحتوي على processType، دون عرضه للمستخدم.
+    */
+   const recordType = String(record.processType ?? "");
+   if (recordType && recordType !== selectedType) return false;
+
+   /*
+    * إذا لم يحتوِ السجل على processType، نتحقق من اسم الخط
+    * عند توفره لتقليل احتمال تطابق معرف خطين مختلفين.
+    */
+   if (!recordType && record.lineName) {
+    const selectedOption = $("lineFilter").selectedOptions[0];
+    if (selectedOption &&
+        selectedOption.textContent !== "كل خطوط الإنتاج" &&
+        String(record.lineName) !== selectedOption.textContent) {
+     return false;
+    }
+   }
+  }
+
+  const wasteId = record.wasteTypeId ?? record.materialId;
+  if (wasteType && String(wasteId ?? "") !== wasteType) return false;
+
+  return true;
+ }
+
+ function reportPeriodText() {
+  const from = $("dateFrom").value;
+  const to = $("dateTo").value;
+
+  if (from && to) return "الفترة من " + from + " إلى " + to;
+  if (from) return "ابتداءً من " + from;
+  if (to) return "حتى تاريخ " + to;
+  return "جميع السجلات";
+ }
+
+ function recordValues(record) {
+  return [
+   record.date || "—",
+   record.shiftName || "—",
+   nameOf(record, ["itemName"]),
+   record.lineName || "—",
+   nameOf(record, ["wasteTypeName", "materialName"]),
+   fmt(record.quantity),
+   fmt(record.allowed),
+   fmt(record.disallowed !== undefined
+    ? record.disallowed
+    : Math.max(0, numberValue(record.quantity) - numberValue(record.allowed))),
+   record.employeeName || "—",
+   record.supervisorName || "—"
+  ];
+ }
+
+ function render() {
+  filteredRecords = allRecords.filter(passesFilters)
+   .sort((a, b) => String(b.date || "").localeCompare(String(a.date || "")));
+
+  const totalQuantity = filteredRecords.reduce(
+   (sum, record) => sum + numberValue(record.quantity), 0
+  );
+
+  const totalAllowed = filteredRecords.reduce(
+   (sum, record) => sum + numberValue(record.allowed), 0
+  );
+
+  const totalDisallowed = filteredRecords.reduce((sum, record) => {
+   const disallowed = record.disallowed !== undefined
+    ? record.disallowed
+    : Math.max(0, numberValue(record.quantity) - numberValue(record.allowed));
+   return sum + numberValue(disallowed);
+  }, 0);
+
+  $("totalRecords").textContent = fmt(filteredRecords.length);
+  $("totalQuantity").textContent = fmt(totalQuantity);
+  $("totalAllowed").textContent = fmt(totalAllowed);
+  $("totalDisallowed").textContent = fmt(totalDisallowed);
+  $("reportPeriod").textContent = reportPeriodText();
+
+  const body = $("reportBody");
+  body.replaceChildren();
+
+  if (!filteredRecords.length) {
+   const tr = document.createElement("tr");
+   const td = document.createElement("td");
+   td.colSpan = 10;
+   td.className = "empty";
+   td.textContent = "لا توجد سجلات تطابق الفلاتر المحددة.";
+   tr.appendChild(td);
+   body.appendChild(tr);
+   return;
+  }
+
+  for (const record of filteredRecords) {
+   const tr = document.createElement("tr");
+   for (const value of recordValues(record)) {
+    const td = document.createElement("td");
+    td.textContent = String(value);
+    tr.appendChild(td);
+   }
+   body.appendChild(tr);
+  }
+ }
+
+ function applyFilters() {
+  const from = $("dateFrom").value;
+  const to = $("dateTo").value;
+
+  if (from && to && from > to) {
+   message("تاريخ البداية يجب أن يكون قبل تاريخ النهاية أو مساويًا له.", "error");
+   return;
+  }
+
+  clearMessage();
+  render();
+ }
+
+ function clearFilters() {
+  [
+   "dateFrom", "dateTo", "shiftFilter", "employeeFilter",
+   "lineFilter", "itemFilter", "wasteTypeFilter"
+  ].forEach(id => { $(id).value = ""; });
+
+  applyFilters();
+ }
+
+ async function waitForArabicFont() {
+  if (document.fonts && document.fonts.ready) {
+   try {
+    await document.fonts.load('16px "ReportArabic"');
+    await document.fonts.ready;
+   } catch (error) {}
+  }
+ }
+
+ function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+ }
+
+ function wrapText(ctx, text, maxWidth) {
+  const words = String(text ?? "").split(/\s+/);
+  const lines = [];
+  let current = "";
+
+  for (const word of words) {
+   const test = current ? current + " " + word : word;
+   if (ctx.measureText(test).width > maxWidth && current) {
+    lines.push(current);
+    current = word;
+   } else {
+    current = test;
+   }
+  }
+
+  if (current) lines.push(current);
+  return lines.length ? lines : [""];
+ }
+
+ function drawCellText(ctx, text, x, y, w, h, fontSize = 17, bold = false) {
+  ctx.font = (bold ? "bold " : "") + fontSize +
+   'px "ReportArabic",Tahoma,Arial,sans-serif';
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.direction = "rtl";
+
+  const lines = wrapText(ctx, text, w - 12);
+  const lineHeight = fontSize + 5;
+  let yy = y + (h - lines.length * lineHeight) / 2 + lineHeight / 2;
+
+  for (const line of lines) {
+   ctx.fillText(line, x + w / 2, yy, w - 8);
+   yy += lineHeight;
+  }
+ }
+
+ async function makeReportCanvas() {
+  await waitForArabicFont();
+
+  const rows = filteredRecords.map(recordValues);
+  const headers = [
+   "التاريخ", "الوردية", "اسم الصنف", "اسم الخط", "نوع التالف",
+   "الكمية التالفة", "التالف المسموح به", "التالف غير المسموح به",
+   "اسم الموظف", "اسم المشرف"
+  ];
+
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+
+  if (!ctx) throw new Error("تعذر تجهيز صورة التقرير على هذا الجهاز.");
+
+  const width = 2400, margin = 50, titleHeight = 105;
+  const summaryHeight = 135, headerHeight = 76, rowHeight = 66;
+  const footerHeight = 100;
+  const tableWidth = width - margin * 2;
+  const weights = [1, .9, 1.25, 1.15, 1.2, 1, 1.05, 1.2, 1.1, 1.1];
+  const sum = weights.reduce((a, b) => a + b, 0);
+  const widths = weights.map(value => tableWidth * value / sum);
+  const height = margin + titleHeight + summaryHeight +
+   headerHeight + rows.length * rowHeight + footerHeight + margin;
+
+  canvas.width = width;
+  canvas.height = Math.max(height, 900);
+
+  ctx.fillStyle = "#fff";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.direction = "rtl";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+
+  ctx.fillStyle = "#111827";
+  ctx.font = 'bold 42px "ReportArabic",Tahoma,Arial,sans-serif';
+  ctx.fillText("تقرير التوالف", width / 2, margin + 30);
+
+  ctx.fillStyle = "#444b60";
+  ctx.font = '23px "ReportArabic",Tahoma,Arial,sans-serif';
+  ctx.fillText(reportPeriodText(), width / 2, margin + 78);
+
+  const sy = margin + titleHeight;
+  const gap = 16;
+  const cw = (tableWidth - gap * 3) / 4;
+
+  const summaries = [
+   ["عدد سجلات التوالف", fmt(filteredRecords.length)],
+   ["إجمالي الكمية التالفة", $("totalQuantity").textContent],
+   ["التالف المسموح به", $("totalAllowed").textContent],
+   ["التالف غير المسموح به", $("totalDisallowed").textContent]
+  ];
+
+  summaries.forEach((item, i) => {
+   const x = margin + i * (cw + gap);
+   roundRect(ctx, x, sy, cw, 100, 12);
+   ctx.fillStyle = "#f6edda";
+   ctx.fill();
+   ctx.strokeStyle = "#d8c394";
+   ctx.stroke();
+
+   ctx.fillStyle = "#454b63";
+   ctx.font = '19px "ReportArabic",Tahoma,Arial,sans-serif';
+   ctx.fillText(item[0], x + cw / 2, sy + 29);
+
+   ctx.fillStyle = "#111827";
+   ctx.font = 'bold 30px "ReportArabic",Tahoma,Arial,sans-serif';
+   ctx.fillText(item[1], x + cw / 2, sy + 68);
+  });
+
+  let y = sy + summaryHeight;
+  let x = margin;
+
+  headers.forEach((header, i) => {
+   ctx.fillStyle = "#eee8da";
+   ctx.fillRect(x, y, widths[i], headerHeight);
+   ctx.strokeStyle = "#bdb5a4";
+   ctx.strokeRect(x, y, widths[i], headerHeight);
+   ctx.fillStyle = "#20276d";
+   drawCellText(ctx, header, x, y, widths[i], headerHeight, 17, true);
+   x += widths[i];
+  });
+
+  y += headerHeight;
+
+  rows.forEach((row, rowIndex) => {
+   x = margin;
+
+   row.forEach((value, columnIndex) => {
+    ctx.fillStyle = rowIndex % 2 === 0 ? "#fff" : "#f8f9fc";
+    ctx.fillRect(x, y, widths[columnIndex], rowHeight);
+    ctx.strokeStyle = "#d8dce7";
+    ctx.strokeRect(x, y, widths[columnIndex], rowHeight);
+    ctx.fillStyle = "#20243a";
+    drawCellText(ctx, value, x, y, widths[columnIndex], rowHeight, 16, false);
+    x += widths[columnIndex];
+   });
+
+   y += rowHeight;
+  });
+
+  ctx.strokeStyle = "#b9bfd0";
+  ctx.beginPath();
+  ctx.moveTo(margin, y + 18);
+  ctx.lineTo(width - margin, y + 18);
+  ctx.stroke();
+
+  ctx.fillStyle = "#33394d";
+  ctx.font = '20px "ReportArabic",Tahoma,Arial,sans-serif';
+  ctx.fillText(CREDIT, width / 2, y + 55);
+
+  return canvas;
+ }
+
+ function canvasBlob(canvas, type = "image/png", quality) {
+  return new Promise((resolve, reject) => {
+   try {
+    canvas.toBlob(blob => {
+     if (blob) resolve(blob);
+     else reject(new Error("لم يتمكن الجهاز من إنشاء الملف."));
+    }, type, quality);
+   } catch (error) {
+    reject(error);
+   }
+  });
+ }
+
+ function safeFilename(name) {
+  return name.replace(/[\\/:*?"<>|]/g, "-");
+ }
+
+ async function downloadBlob(blob, filename) {
+  let url = null;
+
+  try {
+   url = URL.createObjectURL(blob);
+   const link = document.createElement("a");
+   link.href = url;
+   link.download = safeFilename(filename);
+   link.style.display = "none";
+   document.body.appendChild(link);
+   link.click();
+   link.remove();
+
+   setTimeout(() => {
+    if (url) URL.revokeObjectURL(url);
+   }, 15000);
+  } catch (error) {
+   if (url) URL.revokeObjectURL(url);
+   throw error;
+  }
+ }
+
+ async function saveBlob(blob, filename) {
+  await downloadBlob(blob, filename);
+  message(
+   "تم تجهيز الملف وطلب تنزيله. تحقق من مجلد التنزيلات إذا لم يظهر إشعار التنزيل.",
+   "success"
+  );
+ }
+
+ async function shareBlob(blob, filename) {
+  try {
+   if (typeof File !== "undefined" && navigator.share) {
+    const file = new File([blob], filename, {type: blob.type});
+
+    let canShareFiles = true;
+    if (typeof navigator.canShare === "function") {
+     try {
+      canShareFiles = navigator.canShare({files: [file]});
+     } catch (error) {
+      canShareFiles = false;
+     }
+    }
+
+    if (canShareFiles) {
+     await navigator.share({
+      files: [file],
+      title: "تقرير التوالف",
+      text: "تقرير التوالف - " + reportPeriodText()
+     });
+
+     message("تم فتح قائمة المشاركة. اختر التطبيق الذي تريد المشاركة من خلاله.", "success");
+     return;
+    }
+   }
+
+   await downloadBlob(blob, filename);
+   message(
+    "المشاركة المباشرة غير مدعومة في هذا المتصفح. تم تجهيز الملف للتنزيل؛ شاركه من مدير الملفات.",
+    "info"
+   );
+  } catch (error) {
+   if (error && error.name === "AbortError") {
+    message("أُغلقت قائمة المشاركة دون إرسال الملف. لم يتم إرسال أي شيء.", "info");
+    return;
+   }
+
+   console.error("Share error:", error);
+
+   try {
+    await downloadBlob(blob, filename);
+    message(
+     "تعذرت المشاركة المباشرة، لكن تم تجهيز الملف للتنزيل. شاركه من مدير الملفات.",
+     "info"
+    );
+   } catch (downloadError) {
+    console.error("Download fallback error:", downloadError);
+    message(
+     "تعذر تجهيز الملف. تحقق من مساحة الهاتف وصلاحيات التنزيل ثم حاول مرة أخرى.",
+     "error"
+    );
+   }
+  }
+ }
+
+ async function getReportImageBlob() {
+  if (!filteredRecords.length) {
+   throw new Error("لا توجد سجلات لتصديرها. غيّر الفلاتر أو أضف سجلات أولًا.");
+  }
+
+  message("جارٍ تجهيز صورة التقرير، انتظر قليلًا...", "info");
+  return canvasBlob(await makeReportCanvas(), "image/png");
+ }
+
+ async function buildPdfFromCanvas(canvas) {
+  const pageWidthPt = 842, pageHeightPt = 595;
+  const sliceHeight = Math.floor(canvas.width * pageHeightPt / pageWidthPt);
+  const pageCount = Math.ceil(canvas.height / sliceHeight);
+  const pageJpegs = [];
+
+  for (let i = 0; i < pageCount; i++) {
+   const part = document.createElement("canvas");
+   const actualHeight = Math.min(sliceHeight, canvas.height - i * sliceHeight);
+   part.width = canvas.width;
+   part.height = sliceHeight;
+
+   const ctx = part.getContext("2d");
+   if (!ctx) throw new Error("تعذر تجهيز صفحات PDF.");
+
+   ctx.fillStyle = "#fff";
+   ctx.fillRect(0, 0, part.width, part.height);
+
+   ctx.drawImage(
+    canvas, 0, i * sliceHeight, canvas.width, actualHeight,
+    0, 0, canvas.width, actualHeight
+   );
+
+   const blob = await canvasBlob(part, "image/jpeg", 0.92);
+   pageJpegs.push({
+    bytes: new Uint8Array(await blob.arrayBuffer()),
+    width: part.width,
+    height: part.height
+   });
+
+   part.width = 1;
+   part.height = 1;
+  }
+
+  const encoder = new TextEncoder();
+  const join = parts => {
+   const total = parts.reduce((sum, part) => sum + part.length, 0);
+   const output = new Uint8Array(total);
+   let offset = 0;
+
+   for (const part of parts) {
+    output.set(part, offset);
+    offset += part.length;
+   }
+   return output;
+  };
+  const ascii = text => encoder.encode(text);
+  const objects = [];
+  const pageIds = pageJpegs.map((_, i) => 3 + i * 3);
+
+  objects[1] = ascii("<< /Type /Catalog /Pages 2 0 R >>");
+  objects[2] = ascii(
+   "<< /Type /Pages /Kids [" +
+   pageIds.map(id => id + " 0 R").join(" ") +
+   "] /Count " + pageJpegs.length + " >>"
+  );
+
+  pageJpegs.forEach((img, i) => {
+   const pageId = 3 + i * 3;
+   const imageId = pageId + 1;
+   const contentId = pageId + 2;
+
+   objects[pageId] = ascii(
+    "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 " +
+    pageWidthPt + " " + pageHeightPt +
+    "] /Resources << /XObject << /Im0 " + imageId +
+    " 0 R >> >> /Contents " + contentId + " 0 R >>"
+   );
+
+   const imageHeader = ascii(
+    "<< /Type /XObject /Subtype /Image /Width " + img.width +
+    " /Height " + img.height +
+    " /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length " +
+    img.bytes.length + " >>\nstream\n"
+   );
+
+   objects[imageId] = join([imageHeader, img.bytes, ascii("\nendstream")]);
+
+   const content = "q\n" + pageWidthPt + " 0 0 " +
+    pageHeightPt + " 0 0 cm\n/Im0 Do\nQ\n";
+
+   objects[contentId] = ascii(
+    "<< /Length " + encoder.encode(content).length +
+    " >>\nstream\n" + content + "endstream"
+   );
+  });
+
+  const parts = [ascii("%PDF-1.4\n%Report\n")];
+  const offsets = [0];
+  let byteCount = parts[0].length;
+
+  for (let id = 1; id < objects.length; id++) {
+   offsets[id] = byteCount;
+   const chunk = join([
+    ascii(id + " 0 obj\n"),
+    objects[id],
+    ascii("\nendobj\n")
+   ]);
+   parts.push(chunk);
+   byteCount += chunk.length;
+  }
+
+  const xrefOffset = byteCount;
+  let xref = "xref\n0 " + objects.length + "\n0000000000 65535 f \n";
+
+  for (let id = 1; id < objects.length; id++) {
+   xref += String(offsets[id]).padStart(10, "0") + " 00000 n \n";
+  }
+
+  xref += "trailer\n<< /Size " + objects.length +
+   " /Root 1 0 R >>\nstartxref\n" + xrefOffset + "\n%%EOF";
+
+  parts.push(ascii(xref));
+  return new Blob(parts, {type: "application/pdf"});
+ }
+
+ async function getReportPdfBlob() {
+  if (!filteredRecords.length) {
+   throw new Error("لا توجد سجلات لتصديرها. غيّر الفلاتر أو أضف سجلات أولًا.");
+  }
+
+  message("جارٍ إنشاء ملف PDF، قد يستغرق ذلك قليلًا...", "info");
+  return buildPdfFromCanvas(await makeReportCanvas());
+ }
+
+ async function runExport(buttonId, task) {
+  const button = $(buttonId);
+  if (button.disabled) return;
+
+  button.disabled = true;
+
+  try {
+   await task();
+  } catch (error) {
+   console.error("Report export error:", error);
+   message(error.message || "تعذر تجهيز الملف. حاول مرة أخرى.", "error");
+  } finally {
+   button.disabled = false;
+  }
+ }
+
+ function thermalPrint(width) {
+  if (!filteredRecords.length) {
+   message("لا توجد سجلات للطباعة.", "error");
+   return;
+  }
+
+  let printWindow = null;
+
+  try {
+   printWindow = window.open("", "_blank");
+
+   if (!printWindow) {
+    message(
+     "منع المتصفح فتح نافذة الطباعة. اسمح بالنوافذ المنبثقة لهذه الصفحة ثم حاول مجددًا.",
+     "error"
+    );
+    return;
+   }
+
+   const headers = [
+    "التاريخ", "الوردية", "الصنف", "الخط", "نوع التالف",
+    "الكمية", "المسموح", "غير المسموح", "الموظف", "المشرف"
+   ];
+
+   const rows = filteredRecords.map(recordValues);
+
+   const escapeHtml = value => String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+   }[char]));
+
+   const htmlRows = rows.map(row =>
+    "<tr>" + row.map(value => "<td>" + escapeHtml(value) + "</td>").join("") + "</tr>"
+   ).join("");
+
+   const regularFont = new URL("../fonts/Cairo-Regular.ttf", location.href).href;
+   const boldFont = new URL("../fonts/Cairo-Bold.ttf", location.href).href;
+
+   printWindow.document.open();
+   printWindow.document.write(`<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>تقرير التوالف</title>
+<style>
+@font-face{
+ font-family:ReportArabic;
+ src:url("${regularFont}") format("truetype");
+ font-weight:400
+}
+@font-face{
+ font-family:ReportArabic;
+ src:url("${boldFont}") format("truetype");
+ font-weight:700
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;width:100%;color:#000;background:#fff}
+body{font-family:ReportArabic,Tahoma,Arial,sans-serif;font-size:10px;line-height:1.45}
+main{width:100%;padding:2mm}
+h1{font-size:15px;text-align:center;margin:0 0 3px}
+.period{text-align:center;font-size:10px;margin:0 0 5px}
+.summary{border-top:1px solid #000;border-bottom:1px solid #000;padding:4px 0;margin-bottom:6px;text-align:center}
+table{width:100%;border-collapse:collapse;table-layout:fixed}
+th,td{border:1px solid #555;padding:3px 1px;text-align:center;overflow-wrap:anywhere}
+th{font-weight:bold}
+.credit{text-align:center;border-top:1px dashed #555;margin-top:7px;padding-top:5px;font-size:9px}
+@page{size:${width}mm auto;margin:2mm}
+@media print{body{width:${width}mm}main{padding:0}tr{break-inside:avoid}}
+</style>
+</head>
+<body>
+<main>
+<h1>تقرير التوالف</h1>
+<p class="period">${escapeHtml(reportPeriodText())}</p>
+<div class="summary">
+عدد السجلات: ${escapeHtml($("totalRecords").textContent)}<br>
+الكمية التالفة: ${escapeHtml($("totalQuantity").textContent)}<br>
+المسموح: ${escapeHtml($("totalAllowed").textContent)} |
+غير المسموح: ${escapeHtml($("totalDisallowed").textContent)}
+</div>
+<table>
+<thead><tr>${headers.map(h => "<th>" + escapeHtml(h) + "</th>").join("")}</tr></thead>
+<tbody>${htmlRows}</tbody>
+</table>
+<div class="credit">${escapeHtml(CREDIT)}</div>
+</main>
+<script>
+window.onload = async function() {
+ try {
+  if (document.fonts && document.fonts.ready) await document.fonts.ready;
+ } catch (e) {}
+ setTimeout(function() {
+  try { window.focus(); window.print(); } catch (e) {}
+ }, 350);
+};
+window.onafterprint = function() {
+ try { window.close(); } catch (e) {}
+};
+<\/script>
+</body>
+</html>`);
+   printWindow.document.close();
+
+   message(
+    "تم تجهيز التقرير للطباعة بعرض " + width +
+    " مم. اختر الطابعة الحرارية من نافذة الطباعة إذا كانت متصلة ومدعومة.",
+    "success"
+   );
+  } catch (error) {
+   console.error("Thermal print error:", error);
+   if (printWindow) {
+    try { printWindow.close(); } catch (e) {}
+   }
+   message("تعذر فتح تقرير الطباعة. تحقق من إعدادات النوافذ المنبثقة ثم حاول مجددًا.", "error");
+  }
+ }
+
+ $("applyFilters").addEventListener("click", applyFilters);
+ $("clearFilters").addEventListener("click", clearFilters);
+
+ $("saveImage").addEventListener("click", () =>
+  runExport("saveImage", async () =>
+   saveBlob(await getReportImageBlob(), "تقرير-التوالف.png")
+  )
+ );
+
+ $("shareImage").addEventListener("click", () =>
+  runExport("shareImage", async () =>
+   shareBlob(await getReportImageBlob(), "تقرير-التوالف.png")
+  )
+ );
+
+ $("savePdf").addEventListener("click", () =>
+  runExport("savePdf", async () =>
+   saveBlob(await getReportPdfBlob(), "تقرير-التوالف.pdf")
+  )
+ );
+
+ $("sharePdf").addEventListener("click", () =>
+  runExport("sharePdf", async () =>
+   shareBlob(await getReportPdfBlob(), "تقرير-التوالف.pdf")
+  )
+ );
+
+ $("printPdf").addEventListener("click", () => {
+  if (!filteredRecords.length) {
+   message("لا توجد سجلات للطباعة.", "error");
+   return;
+  }
+  clearMessage();
+  window.print();
+ });
+
+ $("print58").addEventListener("click", () => thermalPrint(58));
+ $("print80").addEventListener("click", () => thermalPrint(80));
+
+ async function start() {
+  try {
+   await loadData();
+  } catch (error) {
+   console.error("Report loading error:", error);
+
+   message(
+    "تعذر تحميل الإحصائيات. تحقق من قاعدة البيانات ومسار JS/database.js. التفاصيل: " +
+    (error.message || "خطأ غير معروف"),
+    "error"
+   );
+
+   const body = $("reportBody");
+   body.replaceChildren();
+
+   const tr = document.createElement("tr");
+   const td = document.createElement("td");
+   td.colSpan = 10;
+   td.className = "empty";
+   td.textContent = "تعذر تحميل البيانات.";
+   tr.appendChild(td);
+   body.appendChild(tr);
+  }
+ }
+
+ start();
+})();
+</script>
+</body>
+</html>

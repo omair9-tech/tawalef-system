@@ -1,0 +1,249 @@
+
+:root {
+    --primary: #17365d;
+    --primary-light: #244b79;
+    --background: #f3f6fa;
+    --surface: #ffffff;
+    --text: #253247;
+    --muted: #718096;
+    --border: #e1e7ef;
+    --accent: #e9f1fb;
+    --radius: 14px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Tahoma, Arial, sans-serif;
+    background: var(--background);
+    color: var(--text);
+    line-height: 1.8;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.top-header {
+    background: var(--primary);
+    color: white;
+    padding: 18px 20px;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12);
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    max-width: 1100px;
+    margin: auto;
+}
+
+.brand-icon {
+    width: 52px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    color: var(--primary);
+    border-radius: 13px;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.brand h1 {
+    margin: 0;
+    font-size: 23px;
+}
+
+.brand p {
+    margin: 0;
+    color: #dbe7f6;
+    font-size: 13px;
+}
+
+.container {
+    width: min(1100px, 100%);
+    margin: auto;
+    padding: 22px 16px;
+}
+
+.welcome {
+    padding: 23px;
+    border-radius: var(--radius);
+    background: linear-gradient(135deg, #17365d, #315d8d);
+    color: white;
+    margin-bottom: 22px;
+}
+
+.welcome h2 {
+    margin: 0 0 8px;
+    font-size: 22px;
+}
+
+.welcome p {
+    margin: 0;
+    color: #e1eaf5;
+    font-size: 14px;
+}
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 28px;
+}
+
+.summary-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    min-width: 0;
+}
+
+.summary-icon {
+    font-size: 27px;
+}
+
+.summary-card p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.summary-card strong {
+    display: block;
+    font-size: 24px;
+    color: var(--primary);
+}
+
+.section-heading {
+    margin-bottom: 14px;
+}
+
+.section-heading h2 {
+    font-size: 20px;
+    margin: 0;
+}
+
+.section-heading p {
+    font-size: 13px;
+    color: var(--muted);
+    margin: 2px 0 0;
+}
+
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.menu-card {
+    position: relative;
+    display: block;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 17px 13px 35px;
+    min-width: 0;
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.menu-card:active {
+    transform: scale(0.98);
+}
+
+.menu-card h3 {
+    margin: 8px 0 4px;
+    font-size: 15px;
+    color: var(--primary);
+}
+
+.menu-card p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.9;
+}
+
+.menu-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 43px;
+    height: 43px;
+    background: var(--accent);
+    border-radius: 12px;
+    font-size: 23px;
+}
+
+.card-arrow {
+    position: absolute;
+    left: 13px;
+    bottom: 9px;
+    color: var(--primary);
+    font-size: 20px;
+}
+
+.wastage-card {
+    border-color: #b9cde7;
+}
+
+.settings-card {
+    background: #f9fafc;
+}
+
+.notice {
+    margin-top: 24px;
+    padding: 15px;
+    border: 1px solid #e4d6a8;
+    background: #fffbed;
+    border-radius: 12px;
+    font-size: 13px;
+}
+
+.notice strong {
+    color: #775b13;
+}
+
+.notice p {
+    margin: 4px 0 0;
+}
+
+.footer {
+    text-align: center;
+    padding: 18px;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+@media (min-width: 700px) {
+    .container {
+        padding: 30px 24px;
+    }
+
+    .summary-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .menu-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .welcome h2 {
+        font-size: 26px;
+    }
+
+    .menu-card {
+        padding: 20px 18px 38px;
+    }
+}

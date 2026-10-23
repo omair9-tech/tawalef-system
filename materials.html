@@ -1,0 +1,602 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>أنواع التوالف - نظام التوالف</title>
+
+    <link rel="stylesheet" href="../CSS/style.css">
+
+    <style>
+        .page-container {
+            max-width: 1050px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 16px;
+            box-sizing: border-box;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 18px;
+            color: #17365d;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .page-header {
+            margin-bottom: 20px;
+        }
+
+        .page-header h1 {
+            margin: 0 0 8px;
+            font-size: clamp(22px, 4vw, 30px);
+        }
+
+        .page-header p {
+            color: #666;
+            line-height: 1.8;
+            margin: 0;
+        }
+
+        .panel {
+            background: #fff;
+            border: 1px solid #e2e7ed;
+            border-radius: 14px;
+            padding: 18px;
+            margin-bottom: 18px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+        }
+
+        .panel h2 {
+            margin: 0 0 16px;
+            font-size: 19px;
+        }
+
+        .field-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .text-field {
+            display: block;
+            width: 100%;
+            min-height: 46px;
+            padding: 11px 12px;
+            border: 1px solid #cbd3dc;
+            border-radius: 9px;
+            background: #fff;
+            font: inherit;
+            box-sizing: border-box;
+        }
+
+        .text-field:focus {
+            outline: 2px solid rgba(23, 54, 93, 0.15);
+            border-color: #17365d;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .btn {
+            min-height: 43px;
+            border: 0;
+            border-radius: 9px;
+            padding: 10px 16px;
+            font: inherit;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: #17365d;
+            color: #fff;
+        }
+
+        .btn-secondary {
+            background: #e9edf2;
+            color: #263746;
+        }
+
+        .btn-danger {
+            background: #b42318;
+            color: #fff;
+        }
+
+        .btn-small {
+            min-height: 36px;
+            padding: 7px 11px;
+            margin-left: 5px;
+            font-size: 14px;
+        }
+
+        .message {
+            display: none;
+            padding: 12px;
+            margin-bottom: 16px;
+            border-radius: 9px;
+            line-height: 1.7;
+        }
+
+        .message.show {
+            display: block;
+        }
+
+        .message.success {
+            color: #17643a;
+            background: #e9f8ef;
+        }
+
+        .message.error {
+            color: #9d1c16;
+            background: #fff0ef;
+        }
+
+        .counter {
+            display: inline-block;
+            margin-bottom: 14px;
+            padding: 7px 12px;
+            border-radius: 20px;
+            background: #edf3fa;
+            color: #17365d;
+            font-weight: bold;
+        }
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+        }
+
+        table {
+            width: 100%;
+            min-width: 500px;
+            border-collapse: collapse;
+            background: #fff;
+        }
+
+        th,
+        td {
+            padding: 12px 10px;
+            text-align: right;
+            border-bottom: 1px solid #e8ebef;
+            vertical-align: middle;
+        }
+
+        th {
+            background: #f1f4f8;
+            white-space: nowrap;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: 0;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 24px;
+            color: #777;
+        }
+
+        @media (max-width: 480px) {
+            .page-container {
+                padding: 10px;
+            }
+
+            .panel {
+                padding: 13px;
+            }
+
+            .actions .btn {
+                flex: 1 1 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="page-container">
+        <a class="back-link" href="../index.html">→ العودة إلى الصفحة الرئيسية</a>
+
+        <header class="page-header">
+            <h1>إدارة أنواع التوالف</h1>
+            <p>
+                أضف أنواع التوالف التي قد تحدث أثناء الإنتاج، ثم اربط كل نوع
+                بالموظفين المسؤولين عنه من صفحة الموظفين.
+            </p>
+        </header>
+
+        <div id="pageMessage" class="message" role="status" aria-live="polite"></div>
+
+        <section class="panel">
+            <h2 id="formTitle">إضافة نوع تالف جديد</h2>
+
+            <form id="wasteTypeForm">
+                <label class="field-label" for="wasteTypeName">
+                    اسم نوع التالف
+                </label>
+
+                <input
+                    id="wasteTypeName"
+                    class="text-field"
+                    type="text"
+                    maxlength="150"
+                    placeholder="مثال: تالف التعبئة، تالف الوزن، تالف المنتج..."
+                    autocomplete="off"
+                    required
+                >
+
+                <div class="actions">
+                    <button id="saveButton" class="btn btn-primary" type="submit">
+                        إضافة النوع
+                    </button>
+
+                    <button
+                        id="cancelButton"
+                        class="btn btn-secondary"
+                        type="button"
+                        hidden
+                    >
+                        إلغاء التعديل
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <section class="panel">
+            <h2>أنواع التوالف المسجلة</h2>
+
+            <div id="wasteTypeCounter" class="counter">
+                عدد أنواع التوالف: 0
+            </div>
+
+            <label class="field-label" for="searchWasteType">
+                البحث عن نوع تالف
+            </label>
+
+            <input
+                id="searchWasteType"
+                class="text-field"
+                type="search"
+                placeholder="اكتب اسم النوع للبحث..."
+                autocomplete="off"
+                style="margin-bottom: 14px;"
+            >
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>م</th>
+                            <th>اسم نوع التالف</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="wasteTypeTableBody">
+                        <tr>
+                            <td colspan="3" class="empty-state">
+                                جارٍ تحميل البيانات...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <script src="../JS/database.js"></script>
+
+    <script>
+        "use strict";
+
+        (function () {
+            const form = document.getElementById("wasteTypeForm");
+            const nameInput = document.getElementById("wasteTypeName");
+            const searchInput = document.getElementById("searchWasteType");
+            const tableBody = document.getElementById("wasteTypeTableBody");
+            const counter = document.getElementById("wasteTypeCounter");
+            const message = document.getElementById("pageMessage");
+            const formTitle = document.getElementById("formTitle");
+            const saveButton = document.getElementById("saveButton");
+            const cancelButton = document.getElementById("cancelButton");
+
+            let wasteTypes = [];
+            let editingId = null;
+
+            function normalizeName(value) {
+                return String(value || "")
+                    .trim()
+                    .replace(/\s+/g, " ")
+                    .toLocaleLowerCase("ar");
+            }
+
+            function showMessage(text, type) {
+                message.textContent = text;
+                message.className = "message show " + type;
+            }
+
+            function clearMessage() {
+                message.textContent = "";
+                message.className = "message";
+            }
+
+            async function loadWasteTypes() {
+                wasteTypes = await TawalefDB.getAll("materials");
+
+                wasteTypes.sort(function (a, b) {
+                    return String(a.name || "").localeCompare(
+                        String(b.name || ""),
+                        "ar"
+                    );
+                });
+
+                renderWasteTypes();
+            }
+
+            function makeButton(text, className, action, id) {
+                const button = document.createElement("button");
+
+                button.type = "button";
+                button.textContent = text;
+                button.className = "btn btn-small " + className;
+
+                button.addEventListener("click", function () {
+                    action(id);
+                });
+
+                return button;
+            }
+
+            function renderWasteTypes() {
+                const query = normalizeName(searchInput.value);
+
+                const filtered = wasteTypes.filter(function (item) {
+                    return normalizeName(item.name).includes(query);
+                });
+
+                counter.textContent =
+                    "عدد أنواع التوالف: " + wasteTypes.length +
+                    (query ? " | نتائج البحث: " + filtered.length : "");
+
+                tableBody.innerHTML = "";
+
+                if (filtered.length === 0) {
+                    const row = document.createElement("tr");
+                    const cell = document.createElement("td");
+
+                    cell.colSpan = 3;
+                    cell.className = "empty-state";
+                    cell.textContent = query
+                        ? "لا توجد أنواع توالف مطابقة للبحث."
+                        : "لم تتم إضافة أنواع توالف حتى الآن.";
+
+                    row.appendChild(cell);
+                    tableBody.appendChild(row);
+                    return;
+                }
+
+                filtered.forEach(function (item, index) {
+                    const row = document.createElement("tr");
+                    const numberCell = document.createElement("td");
+                    const nameCell = document.createElement("td");
+                    const actionsCell = document.createElement("td");
+
+                    numberCell.textContent = String(index + 1);
+                    nameCell.textContent = item.name || "";
+
+                    actionsCell.appendChild(
+                        makeButton(
+                            "تعديل",
+                            "btn-secondary",
+                            startEditing,
+                            item.id
+                        )
+                    );
+
+                    actionsCell.appendChild(
+                        makeButton(
+                            "حذف",
+                            "btn-danger",
+                            deleteWasteType,
+                            item.id
+                        )
+                    );
+
+                    row.appendChild(numberCell);
+                    row.appendChild(nameCell);
+                    row.appendChild(actionsCell);
+
+                    tableBody.appendChild(row);
+                });
+            }
+
+            function resetForm() {
+                editingId = null;
+                form.reset();
+
+                formTitle.textContent = "إضافة نوع تالف جديد";
+                saveButton.textContent = "إضافة النوع";
+                cancelButton.hidden = true;
+
+                clearMessage();
+            }
+
+            function startEditing(id) {
+                const item = wasteTypes.find(function (entry) {
+                    return Number(entry.id) === Number(id);
+                });
+
+                if (!item) {
+                    showMessage("لم يتم العثور على نوع التالف.", "error");
+                    return;
+                }
+
+                editingId = item.id;
+                nameInput.value = item.name || "";
+
+                formTitle.textContent = "تعديل نوع التالف";
+                saveButton.textContent = "حفظ التعديلات";
+                cancelButton.hidden = false;
+
+                clearMessage();
+
+                nameInput.focus();
+
+                window.scrollTo({
+                    top: 0,
+                    behavior: "smooth"
+                });
+            }
+
+            async function deleteWasteType(id) {
+                const item = wasteTypes.find(function (entry) {
+                    return Number(entry.id) === Number(id);
+                });
+
+                if (!item) {
+                    showMessage("لم يتم العثور على نوع التالف.", "error");
+                    return;
+                }
+
+                try {
+                    const records = await TawalefDB.getAll("wastage");
+
+                    // فحص الحقول الحالية والقديمة للمحافظة على التوافق.
+                    const isUsed = records.some(function (record) {
+                        const linkedId =
+                            record.wasteTypeId !== undefined &&
+                            record.wasteTypeId !== null
+                                ? record.wasteTypeId
+                                : record.materialId;
+
+                        return String(linkedId) === String(item.id);
+                    });
+
+                    if (isUsed) {
+                        showMessage(
+                            "لا يمكن حذف هذا النوع لأنه مرتبط بسجلات توالف. يمكنك تعديل اسمه بدلًا من حذفه.",
+                            "error"
+                        );
+                        return;
+                    }
+
+                    if (!window.confirm(
+                        'هل تريد حذف نوع التالف "' + item.name + '"؟'
+                    )) {
+                        return;
+                    }
+
+                    await TawalefDB.remove("materials", item.id);
+
+                    if (Number(editingId) === Number(item.id)) {
+                        resetForm();
+                    }
+
+                    await loadWasteTypes();
+
+                    showMessage("تم حذف نوع التالف بنجاح.", "success");
+                } catch (error) {
+                    console.error("خطأ في حذف نوع التالف:", error);
+
+                    showMessage(
+                        "تعذر حذف نوع التالف: " +
+                        (error.message || "خطأ غير معروف"),
+                        "error"
+                    );
+                }
+            }
+
+            form.addEventListener("submit", async function (event) {
+                event.preventDefault();
+                clearMessage();
+
+                const name = nameInput.value.trim();
+
+                if (!name) {
+                    showMessage("يرجى إدخال اسم نوع التالف.", "error");
+                    nameInput.focus();
+                    return;
+                }
+
+                const duplicate = wasteTypes.some(function (item) {
+                    return (
+                        normalizeName(item.name) === normalizeName(name) &&
+                        Number(item.id) !== Number(editingId)
+                    );
+                });
+
+                if (duplicate) {
+                    showMessage("نوع التالف هذا مسجل بالفعل.", "error");
+                    nameInput.focus();
+                    return;
+                }
+
+                saveButton.disabled = true;
+
+                try {
+                    if (editingId !== null) {
+                        await TawalefDB.update("materials", editingId, {
+                            name: name,
+                            updatedAt: new Date().toISOString()
+                        });
+
+                        resetForm();
+                        await loadWasteTypes();
+
+                        showMessage("تم تعديل نوع التالف بنجاح.", "success");
+                    } else {
+                        await TawalefDB.add("materials", {
+                            name: name,
+                            createdAt: new Date().toISOString()
+                        });
+
+                        form.reset();
+                        await loadWasteTypes();
+
+                        showMessage("تمت إضافة نوع التالف بنجاح.", "success");
+                        nameInput.focus();
+                    }
+                } catch (error) {
+                    console.error("خطأ في حفظ نوع التالف:", error);
+
+                    showMessage(
+                        "تعذر حفظ نوع التالف: " +
+                        (error.message || "خطأ غير معروف"),
+                        "error"
+                    );
+                } finally {
+                    saveButton.disabled = false;
+                }
+            });
+
+            cancelButton.addEventListener("click", resetForm);
+            searchInput.addEventListener("input", renderWasteTypes);
+
+            async function startPage() {
+                try {
+                    await TawalefDB.initialize();
+                    await loadWasteTypes();
+                } catch (error) {
+                    console.error("تعذر تشغيل صفحة أنواع التوالف:", error);
+
+                    showMessage(
+                        "تعذر تشغيل الصفحة: " +
+                        (error.message || "خطأ غير معروف"),
+                        "error"
+                    );
+                }
+            }
+
+            startPage();
+        })();
+    </script>
+</body>
+</html>

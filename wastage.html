@@ -1,0 +1,1186 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل التوالف</title>
+
+    <style>
+        :root {
+            --primary: #17365d;
+            --primary-light: #244b79;
+            --background: #f3f6fa;
+            --surface: #ffffff;
+            --text: #253247;
+            --muted: #718096;
+            --border: #e1e7ef;
+            --danger: #c0392b;
+            --success: #16804a;
+            --radius: 14px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 18px;
+            background: var(--background);
+            color: var(--text);
+            font-family: Tahoma, Arial, sans-serif;
+            line-height: 1.7;
+        }
+
+        .container {
+            max-width: 1250px;
+            margin: auto;
+        }
+
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            margin: 0;
+            color: var(--primary);
+            font-size: 25px;
+        }
+
+        h2 {
+            margin-top: 0;
+            font-size: 19px;
+            color: var(--primary);
+        }
+
+        .panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 3px 12px rgba(23, 54, 93, 0.04);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .field {
+            min-width: 0;
+        }
+
+        .field label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            min-height: 44px;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            background: #fff;
+            color: var(--text);
+            font: inherit;
+            outline: none;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(36, 75, 121, 0.1);
+        }
+
+        .hint {
+            color: var(--muted);
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .calculation {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            margin-top: 18px;
+        }
+
+        .calculation-item {
+            padding: 14px;
+            background: #f5f8fc;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+        }
+
+        .calculation-item span {
+            display: block;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .calculation-item strong {
+            display: block;
+            margin-top: 5px;
+            font-size: 22px;
+            color: var(--primary);
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        button,
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 42px;
+            padding: 9px 17px;
+            border: none;
+            border-radius: 9px;
+            font: inherit;
+            font-size: 14px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .primary-button,
+        .back-link {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .secondary-button {
+            background: #e9eef5;
+            color: var(--primary);
+        }
+
+        .danger-button {
+            background: #fcebea;
+            color: var(--danger);
+        }
+
+        .small-button {
+            min-height: 34px;
+            padding: 5px 10px;
+            margin: 2px;
+            font-size: 12px;
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .message {
+            display: none;
+            padding: 12px 14px;
+            margin-bottom: 15px;
+            border-radius: 9px;
+            overflow-wrap: anywhere;
+        }
+
+        .message.success {
+            display: block;
+            color: #116339;
+            background: #e8f7ee;
+            border: 1px solid #b9e6c9;
+        }
+
+        .message.error {
+            display: block;
+            color: #9d2720;
+            background: #fff0ef;
+            border: 1px solid #f1c4c0;
+        }
+
+        .table-tools {
+            margin-bottom: 12px;
+        }
+
+        .table-wrap {
+            width: 100%;
+            overflow-x: auto;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+        }
+
+        table {
+            width: 100%;
+            min-width: 1150px;
+            border-collapse: collapse;
+            background: #fff;
+        }
+
+        th,
+        td {
+            padding: 11px 10px;
+            border-bottom: 1px solid var(--border);
+            text-align: right;
+            vertical-align: middle;
+            white-space: nowrap;
+            font-size: 13px;
+        }
+
+        th {
+            background: #edf2f8;
+            color: var(--primary);
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .empty-row {
+            padding: 25px;
+            text-align: center;
+            color: var(--muted);
+        }
+
+        @media (max-width: 850px) {
+            .form-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 560px) {
+            body {
+                padding: 10px;
+            }
+
+            .panel {
+                padding: 14px;
+            }
+
+            .form-grid,
+            .calculation {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 21px;
+            }
+
+            .actions button {
+                flex: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <header class="page-header">
+        <h1>📝 تسجيل التوالف</h1>
+        <a class="back-link" href="../index.html">العودة للرئيسية</a>
+    </header>
+
+    <div id="message" class="message" role="status" aria-live="polite"></div>
+
+    <section class="panel">
+        <h2 id="formTitle">إضافة سجل توالف جديد</h2>
+
+        <form id="wastageForm">
+            <div class="form-grid">
+
+                <div class="field">
+                    <label for="recordDate">التاريخ *</label>
+                    <input type="date" id="recordDate" required>
+                </div>
+
+                <div class="field">
+                    <label for="shiftId">الوردية *</label>
+                    <select id="shiftId" required>
+                        <option value="">اختر الوردية</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="itemId">اسم الصنف *</label>
+                    <select id="itemId" required>
+                        <option value="">اختر الصنف</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="lineKey">خط الإنتاج *</label>
+                    <select id="lineKey" required>
+                        <option value="">اختر خط الإنتاج</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="wasteTypeId">نوع التالف *</label>
+                    <select id="wasteTypeId" required>
+                        <option value="">اختر نوع التالف</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="employeeId">اسم الموظف *</label>
+                    <select id="employeeId" required disabled>
+                        <option value="">اختر نوع التالف أولًا</option>
+                    </select>
+                    <div id="employeeHint" class="hint">
+                        اختر نوع التالف لعرض الموظفين المرتبطين به.
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="quantity">الكمية التالفة *</label>
+                    <input
+                        type="number"
+                        id="quantity"
+                        min="0"
+                        step="any"
+                        placeholder="أدخل الكمية"
+                        required
+                    >
+                </div>
+
+                <div class="field">
+                    <label for="allowed">التالف المسموح به *</label>
+                    <input
+                        type="number"
+                        id="allowed"
+                        min="0"
+                        step="any"
+                        value="2"
+                        required
+                    >
+                </div>
+
+                <div class="field">
+                    <label for="supervisorId">اسم المشرف *</label>
+                    <select id="supervisorId" required>
+                        <option value="">اختر المشرف</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <div class="calculation">
+                <div class="calculation-item">
+                    <span>التالف المسموح به</span>
+                    <strong id="allowedPreview">0</strong>
+                </div>
+
+                <div class="calculation-item">
+                    <span>التالف غير المسموح به</span>
+                    <strong id="disallowedPreview">0</strong>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button type="submit" class="primary-button" id="saveButton">
+                    حفظ سجل التوالف
+                </button>
+
+                <button type="button" class="secondary-button" id="resetButton">
+                    تفريغ الحقول
+                </button>
+            </div>
+        </form>
+    </section>
+
+    <section class="panel">
+        <h2>📋 سجلات التوالف</h2>
+
+        <div class="table-tools">
+            <input
+                type="search"
+                id="tableSearch"
+                placeholder="ابحث بالتاريخ أو الصنف أو الخط أو الموظف أو المشرف..."
+            >
+        </div>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                <tr>
+                    <th>التاريخ</th>
+                    <th>الوردية</th>
+                    <th>اسم الصنف</th>
+                    <th>اسم الخط</th>
+                    <th>نوع التالف</th>
+                    <th>الكمية التالفة</th>
+                    <th>التالف المسموح به</th>
+                    <th>التالف غير المسموح به</th>
+                    <th>اسم الموظف</th>
+                    <th>اسم المشرف</th>
+                    <th>الإجراءات</th>
+                </tr>
+                </thead>
+
+                <tbody id="recordsBody">
+                    <tr>
+                        <td colspan="11" class="empty-row">جارٍ تحميل السجلات...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+</div>
+
+<script src="../JS/database.js"></script>
+
+<script>
+"use strict";
+
+(() => {
+    const $ = id => document.getElementById(id);
+    const form = $("wastageForm");
+
+    let shifts = [];
+    let items = [];
+    let wasteTypes = [];
+    let employees = [];
+    let supervisors = [];
+    let manufacturingLines = [];
+    let packagingLines = [];
+    let records = [];
+
+    let editingId = null;
+    let defaultAllowed = 2;
+    let loading = false;
+
+    function getName(record, keys, fallback = "") {
+        if (!record) return fallback;
+
+        for (const key of keys) {
+            if (
+                record[key] !== undefined &&
+                record[key] !== null &&
+                String(record[key]).trim() !== ""
+            ) {
+                return String(record[key]).trim();
+            }
+        }
+
+        return fallback;
+    }
+
+    function getId(record) {
+        return record && record.id !== undefined
+            ? String(record.id)
+            : "";
+    }
+
+    function displayNumber(value) {
+        const number = Number(value);
+
+        if (!Number.isFinite(number)) return "0";
+
+        return number.toLocaleString("en-US", {
+            maximumFractionDigits: 6
+        });
+    }
+
+    function showMessage(message, type = "success") {
+        const box = $("message");
+        box.textContent = message;
+        box.className = "message " + type;
+    }
+
+    function clearMessage() {
+        $("message").textContent = "";
+        $("message").className = "message";
+    }
+
+    function fillSelect(select, list, placeholder, labelKeys = ["name"]) {
+        select.replaceChildren();
+
+        const first = document.createElement("option");
+        first.value = "";
+        first.textContent = placeholder;
+        select.appendChild(first);
+
+        list.forEach(record => {
+            const id = getId(record);
+            if (!id) return;
+
+            const option = document.createElement("option");
+            option.value = id;
+            option.textContent = getName(record, labelKeys, "بدون اسم");
+            select.appendChild(option);
+        });
+    }
+
+    function getEmployeeName(employee) {
+        return getName(
+            employee,
+            ["name", "employeeName", "fullName"],
+            "بدون اسم"
+        );
+    }
+
+    /*
+      يدعم ربط الموظف بأكثر من نوع تالف،
+      كما يدعم بعض سجلات الموظفين القديمة.
+    */
+    function linkedWasteTypeIds(employee) {
+        if (!employee) return [];
+
+        if (Array.isArray(employee.wasteTypeIds)) {
+            return employee.wasteTypeIds.map(String);
+        }
+
+        if (
+            employee.wasteTypeIds !== undefined &&
+            employee.wasteTypeIds !== null &&
+            employee.wasteTypeIds !== ""
+        ) {
+            return [String(employee.wasteTypeIds)];
+        }
+
+        const oldId = employee.wasteTypeId ?? employee.materialId;
+
+        if (oldId !== undefined && oldId !== null && oldId !== "") {
+            return [String(oldId)];
+        }
+
+        return [];
+    }
+
+    /*
+      قائمة منسدلة عادية للموظفين.
+      عند اختيار نوع التالف، تظهر الموظفون المرتبطون به.
+      لا يوجد مربع بحث عن الموظفين.
+    */
+    function refreshEmployeeOptions(preferredId = "") {
+        const wasteTypeId = $("wasteTypeId").value;
+        const select = $("employeeId");
+        const hint = $("employeeHint");
+
+        select.replaceChildren();
+
+        const placeholder = document.createElement("option");
+        placeholder.value = "";
+
+        if (!wasteTypeId) {
+            placeholder.textContent = "اختر نوع التالف أولًا";
+            select.appendChild(placeholder);
+            select.disabled = true;
+            hint.textContent = "اختر نوع التالف لعرض الموظفين المرتبطين به.";
+            return;
+        }
+
+        placeholder.textContent = "اختر الموظف";
+        select.appendChild(placeholder);
+        select.disabled = false;
+
+        const linkedEmployees = employees.filter(employee =>
+            linkedWasteTypeIds(employee).includes(String(wasteTypeId))
+        );
+
+        linkedEmployees.forEach(employee => {
+            const option = document.createElement("option");
+            option.value = getId(employee);
+            option.textContent = getEmployeeName(employee);
+            select.appendChild(option);
+        });
+
+        if (
+            preferredId &&
+            linkedEmployees.some(employee => getId(employee) === String(preferredId))
+        ) {
+            select.value = String(preferredId);
+        }
+
+        if (linkedEmployees.length === 0) {
+            hint.textContent =
+                "لا يوجد موظفون مرتبطون بنوع التالف المختار. راجع صفحة الموظفين.";
+        } else {
+            hint.textContent =
+                "عدد الموظفين المرتبطين بهذا النوع: " + linkedEmployees.length;
+        }
+    }
+
+    function buildLineOptions(selectedValue = "") {
+        const select = $("lineKey");
+        select.replaceChildren();
+
+        const placeholder = document.createElement("option");
+        placeholder.value = "";
+        placeholder.textContent = "اختر خط الإنتاج";
+        select.appendChild(placeholder);
+
+        manufacturingLines.forEach(line => {
+            if (line.id === undefined || line.id === null) return;
+
+            const option = document.createElement("option");
+            option.value = "manufacturing:" + line.id;
+            option.textContent = getName(line, ["name", "lineName"], "خط بدون اسم");
+            select.appendChild(option);
+        });
+
+        packagingLines.forEach(line => {
+            if (line.id === undefined || line.id === null) return;
+
+            const option = document.createElement("option");
+            option.value = "packaging:" + line.id;
+            option.textContent = getName(line, ["name", "lineName"], "خط بدون اسم");
+            select.appendChild(option);
+        });
+
+        if (selectedValue) {
+            select.value = selectedValue;
+        }
+    }
+
+    function selectedLine() {
+        const value = $("lineKey").value;
+
+        if (!value || !value.includes(":")) return null;
+
+        const separator = value.indexOf(":");
+        const processType = value.slice(0, separator);
+        const id = value.slice(separator + 1);
+
+        let list = [];
+
+        if (processType === "manufacturing") {
+            list = manufacturingLines;
+        } else if (processType === "packaging") {
+            list = packagingLines;
+        }
+
+        const line = list.find(record => String(record.id) === String(id));
+
+        if (!line) return null;
+
+        return {
+            processType,
+            lineId: Number(id),
+            lineName: getName(line, ["name", "lineName"], "بدون اسم")
+        };
+    }
+
+    function getAllowedValue() {
+        const value = Number($("allowed").value);
+        return Number.isFinite(value) && value >= 0 ? value : 0;
+    }
+
+    function refreshCalculation() {
+        const quantityRaw = $("quantity").value;
+        const quantity = Number(quantityRaw);
+        const allowed = getAllowedValue();
+
+        const safeQuantity =
+            quantityRaw.trim() !== "" &&
+            Number.isFinite(quantity) &&
+            quantity >= 0
+                ? quantity
+                : 0;
+
+        $("allowedPreview").textContent = displayNumber(allowed);
+        $("disallowedPreview").textContent =
+            displayNumber(Math.max(0, safeQuantity - allowed));
+    }
+
+    async function loadDefaultAllowed() {
+        try {
+            const result = await TawalefDB.getSetting("allowedDefault");
+
+            let value = result;
+
+            if (result && typeof result === "object") {
+                value = result.value ?? result.amount ?? result.quantity;
+            }
+
+            const number = Number(value);
+
+            if (
+                value !== undefined &&
+                Number.isFinite(number) &&
+                number >= 0
+            ) {
+                defaultAllowed = number;
+            }
+        } catch (error) {
+            console.warn("تعذر تحميل القيمة الافتراضية:", error);
+        }
+
+        $("allowed").value = String(defaultAllowed);
+    }
+
+    async function loadAll() {
+        if (loading) return;
+        loading = true;
+
+        try {
+            await TawalefDB.initialize();
+
+            const results = await Promise.all([
+                TawalefDB.getAll("shifts"),
+                TawalefDB.getAll("items"),
+                TawalefDB.getAll("materials"),
+                TawalefDB.getAll("employees"),
+                TawalefDB.getAll("supervisors"),
+                TawalefDB.getAll("manufacturing"),
+                TawalefDB.getAll("packaging"),
+                TawalefDB.getAll("wastage")
+            ]);
+
+            shifts = results[0] || [];
+            items = results[1] || [];
+            wasteTypes = results[2] || [];
+            employees = results[3] || [];
+            supervisors = results[4] || [];
+            manufacturingLines = results[5] || [];
+            packagingLines = results[6] || [];
+            records = results[7] || [];
+
+            fillSelect(
+                $("shiftId"),
+                shifts,
+                "اختر الوردية",
+                ["name", "shiftName"]
+            );
+
+            fillSelect(
+                $("itemId"),
+                items,
+                "اختر الصنف",
+                ["name", "itemName"]
+            );
+
+            fillSelect(
+                $("wasteTypeId"),
+                wasteTypes,
+                "اختر نوع التالف",
+                ["name", "materialName", "wasteTypeName"]
+            );
+
+            fillSelect(
+                $("supervisorId"),
+                supervisors,
+                "اختر المشرف",
+                ["name", "supervisorName"]
+            );
+
+            buildLineOptions();
+
+            await loadDefaultAllowed();
+
+            refreshEmployeeOptions();
+            refreshCalculation();
+            renderRecords();
+
+        } catch (error) {
+            console.error(error);
+
+            showMessage(
+                "تعذر تحميل البيانات. تحقق من ملف قاعدة البيانات. التفاصيل: " +
+                (error.message || error),
+                "error"
+            );
+        } finally {
+            loading = false;
+        }
+    }
+
+    function renderRecords() {
+        const tbody = $("recordsBody");
+        const search = String($("tableSearch").value || "")
+            .trim()
+            .toLocaleLowerCase();
+
+        const sorted = [...records].sort((a, b) =>
+            String(b.date || "").localeCompare(String(a.date || ""))
+        );
+
+        const filtered = sorted.filter(record => {
+            const values = [
+                record.date,
+                record.shiftName,
+                record.itemName,
+                record.lineName,
+                record.wasteTypeName,
+                record.materialName,
+                record.employeeName,
+                record.supervisorName,
+                record.quantity,
+                record.allowed,
+                record.disallowed
+            ];
+
+            return values.some(value =>
+                String(value ?? "").toLocaleLowerCase().includes(search)
+            );
+        });
+
+        tbody.replaceChildren();
+
+        if (filtered.length === 0) {
+            const tr = document.createElement("tr");
+            const td = document.createElement("td");
+
+            td.colSpan = 11;
+            td.className = "empty-row";
+            td.textContent = search
+                ? "لا توجد سجلات تطابق البحث."
+                : "لا توجد سجلات توالف حتى الآن.";
+
+            tr.appendChild(td);
+            tbody.appendChild(tr);
+            return;
+        }
+
+        filtered.forEach(record => {
+            const tr = document.createElement("tr");
+
+            const values = [
+                record.date || "",
+                record.shiftName || "",
+                record.itemName || "",
+                record.lineName || "",
+                record.wasteTypeName || record.materialName || "",
+                displayNumber(record.quantity),
+                displayNumber(record.allowed),
+                displayNumber(record.disallowed),
+                record.employeeName || "",
+                record.supervisorName || ""
+            ];
+
+            values.forEach(value => {
+                const td = document.createElement("td");
+                td.textContent = String(value);
+                tr.appendChild(td);
+            });
+
+            const actionsTd = document.createElement("td");
+
+            const editButton = document.createElement("button");
+            editButton.type = "button";
+            editButton.className = "secondary-button small-button";
+            editButton.textContent = "تعديل";
+            editButton.addEventListener("click", () => editRecord(record.id));
+
+            const deleteButton = document.createElement("button");
+            deleteButton.type = "button";
+            deleteButton.className = "danger-button small-button";
+            deleteButton.textContent = "حذف";
+            deleteButton.addEventListener("click", () => deleteRecord(record.id));
+
+            actionsTd.append(editButton, deleteButton);
+            tr.appendChild(actionsTd);
+
+            tbody.appendChild(tr);
+        });
+    }
+
+    function resetForm() {
+        editingId = null;
+        form.reset();
+
+        $("formTitle").textContent = "إضافة سجل توالف جديد";
+        $("saveButton").textContent = "حفظ سجل التوالف";
+
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, "0");
+        const day = String(now.getDate()).padStart(2, "0");
+
+        $("recordDate").value = `${year}-${month}-${day}`;
+        $("allowed").value = String(defaultAllowed);
+
+        refreshEmployeeOptions();
+        refreshCalculation();
+        clearMessage();
+    }
+
+    function editRecord(id) {
+        const record = records.find(
+            item => String(item.id) === String(id)
+        );
+
+        if (!record) {
+            showMessage("لم يتم العثور على السجل المطلوب.", "error");
+            return;
+        }
+
+        editingId = record.id;
+
+        $("formTitle").textContent = "تعديل سجل التوالف";
+        $("saveButton").textContent = "حفظ التعديلات";
+
+        $("recordDate").value = record.date || "";
+        $("shiftId").value =
+            record.shiftId == null ? "" : String(record.shiftId);
+
+        $("itemId").value =
+            record.itemId == null ? "" : String(record.itemId);
+
+        const processType = record.processType || "manufacturing";
+        const lineId = record.lineId;
+
+        buildLineOptions(
+            lineId == null ? "" : `${processType}:${lineId}`
+        );
+
+        $("wasteTypeId").value = String(
+            record.wasteTypeId ?? record.materialId ?? ""
+        );
+
+        refreshEmployeeOptions(String(record.employeeId ?? ""));
+
+        $("quantity").value = record.quantity ?? "";
+        $("allowed").value = record.allowed ?? defaultAllowed;
+
+        $("supervisorId").value =
+            record.supervisorId == null
+                ? ""
+                : String(record.supervisorId);
+
+        refreshCalculation();
+        clearMessage();
+
+        $("formTitle").scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+    }
+
+    async function deleteRecord(id) {
+        const record = records.find(
+            item => String(item.id) === String(id)
+        );
+
+        if (!record) return;
+
+        if (!confirm("هل أنت متأكد من حذف سجل التوالف هذا؟")) return;
+
+        try {
+            await TawalefDB.remove("wastage", Number(id));
+
+            records = records.filter(
+                item => String(item.id) !== String(id)
+            );
+
+            renderRecords();
+
+            if (String(editingId) === String(id)) {
+                resetForm();
+            }
+
+            showMessage("تم حذف سجل التوالف بنجاح.");
+        } catch (error) {
+            console.error(error);
+            showMessage(
+                "تعذر حذف السجل: " + (error.message || error),
+                "error"
+            );
+        }
+    }
+
+    function getRecordById(list, id) {
+        return list.find(item => String(item.id) === String(id));
+    }
+
+    async function saveRecord(event) {
+        event.preventDefault();
+        clearMessage();
+
+        if (loading) {
+            showMessage("انتظر حتى يكتمل تحميل البيانات.", "error");
+            return;
+        }
+
+        const date = $("recordDate").value;
+        const shiftId = $("shiftId").value;
+        const itemId = $("itemId").value;
+        const line = selectedLine();
+        const wasteTypeId = $("wasteTypeId").value;
+        const employeeId = $("employeeId").value;
+        const supervisorId = $("supervisorId").value;
+
+        const quantityRaw = $("quantity").value.trim();
+        const allowedRaw = $("allowed").value.trim();
+
+        const quantity = Number(quantityRaw);
+        const allowed = Number(allowedRaw);
+
+        if (
+            !date ||
+            !shiftId ||
+            !itemId ||
+            !line ||
+            !wasteTypeId ||
+            !employeeId ||
+            !supervisorId
+        ) {
+            showMessage(
+                "يرجى تعبئة جميع الحقول المطلوبة واختيار الموظف من القائمة.",
+                "error"
+            );
+            return;
+        }
+
+        if (
+            quantityRaw === "" ||
+            !Number.isFinite(quantity) ||
+            quantity < 0
+        ) {
+            showMessage("أدخل كمية تالفة صحيحة لا تقل عن صفر.", "error");
+            return;
+        }
+
+        if (
+            allowedRaw === "" ||
+            !Number.isFinite(allowed) ||
+            allowed < 0
+        ) {
+            showMessage(
+                "أدخل كمية مسموح بها صحيحة لا تقل عن صفر.",
+                "error"
+            );
+            return;
+        }
+
+        const employee = getRecordById(employees, employeeId);
+        const shift = getRecordById(shifts, shiftId);
+        const item = getRecordById(items, itemId);
+        const wasteType = getRecordById(wasteTypes, wasteTypeId);
+        const supervisor = getRecordById(supervisors, supervisorId);
+
+        if (!employee || !shift || !item || !wasteType || !supervisor) {
+            showMessage(
+                "تعذر التحقق من أحد الاختيارات. أعد تحميل الصفحة وحاول مجددًا.",
+                "error"
+            );
+            return;
+        }
+
+        if (!linkedWasteTypeIds(employee).includes(String(wasteTypeId))) {
+            showMessage(
+                "الموظف غير مرتبط بنوع التالف المختار. راجع صفحة الموظفين.",
+                "error"
+            );
+            return;
+        }
+
+        const disallowed = Math.max(0, quantity - allowed);
+        const now = new Date().toISOString();
+
+        const data = {
+            date,
+
+            shiftId: Number(shiftId),
+            shiftName: getName(shift, ["name", "shiftName"]),
+
+            itemId: Number(itemId),
+            itemName: getName(item, ["name", "itemName"]),
+
+            processType: line.processType,
+            lineId: line.lineId,
+            lineName: line.lineName,
+
+            wasteTypeId: Number(wasteTypeId),
+            wasteTypeName: getName(
+                wasteType,
+                ["name", "materialName", "wasteTypeName"]
+            ),
+
+            // المحافظة على توافق السجلات القديمة.
+            materialId: Number(wasteTypeId),
+            materialName: getName(
+                wasteType,
+                ["name", "materialName", "wasteTypeName"]
+            ),
+
+            employeeId: Number(employeeId),
+            employeeName: getEmployeeName(employee),
+
+            quantity,
+            allowed,
+            disallowed,
+
+            supervisorId: Number(supervisorId),
+            supervisorName: getName(
+                supervisor,
+                ["name", "supervisorName"]
+            ),
+
+            updatedAt: now
+        };
+
+        const saveButton = $("saveButton");
+        saveButton.disabled = true;
+
+        try {
+            if (editingId !== null) {
+                const existing = records.find(
+                    item => String(item.id) === String(editingId)
+                );
+
+                await TawalefDB.update("wastage", Number(editingId), {
+                    ...data,
+                    createdAt: existing?.createdAt || now
+                });
+            } else {
+                await TawalefDB.add("wastage", {
+                    ...data,
+                    createdAt: now
+                });
+            }
+
+            records = await TawalefDB.getAll("wastage");
+
+            renderRecords();
+            resetForm();
+
+            showMessage(
+                editingId === null
+                    ? "تم حفظ سجل التوالف بنجاح."
+                    : "تم حفظ التعديلات بنجاح."
+            );
+
+        } catch (error) {
+            console.error(error);
+
+            showMessage(
+                "حدث خطأ أثناء الحفظ: " + (error.message || error),
+                "error"
+            );
+        } finally {
+            saveButton.disabled = false;
+        }
+    }
+
+    $("wasteTypeId").addEventListener("change", () => {
+        refreshEmployeeOptions();
+    });
+
+    $("quantity").addEventListener("input", refreshCalculation);
+    $("allowed").addEventListener("input", refreshCalculation);
+    $("tableSearch").addEventListener("input", renderRecords);
+
+    $("resetButton").addEventListener("click", resetForm);
+    form.addEventListener("submit", saveRecord);
+
+    loadAll().then(() => {
+        resetForm();
+    });
+})();
+</script>
+
+</body>
+</html>

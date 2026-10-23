@@ -1,0 +1,755 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>موظفو الإنتاج - نظام التوالف</title>
+    <link rel="stylesheet" href="../CSS/style.css">
+
+    <style>
+        .page-container {
+            max-width: 1100px;
+            width: 100%;
+            margin: auto;
+            padding: 16px;
+            box-sizing: border-box;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 18px;
+            color: #17365d;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .page-header {
+            margin-bottom: 20px;
+        }
+
+        .page-header h1 {
+            margin: 0 0 8px;
+            font-size: clamp(22px, 4vw, 30px);
+        }
+
+        .page-header p {
+            margin: 0;
+            color: #666;
+            line-height: 1.8;
+        }
+
+        .panel {
+            background: #fff;
+            border: 1px solid #e2e7ed;
+            border-radius: 14px;
+            padding: 18px;
+            margin-bottom: 18px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+        }
+
+        .panel h2 {
+            margin: 0 0 16px;
+            font-size: 19px;
+        }
+
+        .field-label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .text-field {
+            display: block;
+            width: 100%;
+            min-height: 46px;
+            padding: 11px 12px;
+            border: 1px solid #cbd3dc;
+            border-radius: 9px;
+            box-sizing: border-box;
+            background: #fff;
+            font: inherit;
+        }
+
+        .text-field:focus {
+            outline: 2px solid rgba(23, 54, 93, 0.15);
+            border-color: #17365d;
+        }
+
+        .help-text {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.8;
+            margin: 8px 0 12px;
+        }
+
+        .waste-types-box {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 10px;
+            padding: 12px;
+            border: 1px solid #e0e5eb;
+            border-radius: 10px;
+            background: #fafbfd;
+        }
+
+        .waste-type-option {
+            display: flex;
+            align-items: flex-start;
+            gap: 9px;
+            padding: 10px;
+            border: 1px solid #e5e9ef;
+            border-radius: 8px;
+            background: #fff;
+            line-height: 1.6;
+            overflow-wrap: anywhere;
+        }
+
+        .waste-type-option input {
+            margin-top: 5px;
+            flex-shrink: 0;
+            width: 17px;
+            height: 17px;
+        }
+
+        .empty-types {
+            color: #777;
+            line-height: 1.8;
+            padding: 8px;
+        }
+
+        .form-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .btn {
+            min-height: 43px;
+            border: 0;
+            border-radius: 9px;
+            padding: 10px 16px;
+            font: inherit;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: #17365d;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #e9edf2;
+            color: #263746;
+        }
+
+        .btn-danger {
+            background: #b42318;
+            color: white;
+        }
+
+        .btn-small {
+            min-height: 36px;
+            padding: 7px 11px;
+            font-size: 14px;
+            margin-left: 5px;
+            margin-bottom: 3px;
+        }
+
+        .message {
+            display: none;
+            padding: 12px;
+            margin-bottom: 16px;
+            border-radius: 9px;
+            line-height: 1.7;
+        }
+
+        .message.show {
+            display: block;
+        }
+
+        .message.success {
+            color: #17643a;
+            background: #e9f8ef;
+        }
+
+        .message.error {
+            color: #9d1c16;
+            background: #fff0ef;
+        }
+
+        .counter {
+            display: inline-block;
+            margin-bottom: 14px;
+            padding: 7px 12px;
+            border-radius: 20px;
+            background: #edf3fa;
+            color: #17365d;
+            font-weight: bold;
+        }
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+        }
+
+        table {
+            width: 100%;
+            min-width: 650px;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th, td {
+            padding: 12px 10px;
+            text-align: right;
+            vertical-align: middle;
+            border-bottom: 1px solid #e8ebef;
+        }
+
+        th {
+            background: #f1f4f8;
+            white-space: nowrap;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: 0;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #777;
+            padding: 24px;
+        }
+
+        .type-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        .type-tag {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 6px;
+            background: #edf3fa;
+            color: #17365d;
+            font-size: 13px;
+        }
+
+        @media (max-width: 480px) {
+            .page-container {
+                padding: 10px;
+            }
+
+            .panel {
+                padding: 13px;
+            }
+
+            .form-actions .btn {
+                flex: 1 1 100%;
+            }
+
+            .waste-types-box {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<main class="page-container">
+    <a class="back-link" href="../index.html">→ العودة إلى الصفحة الرئيسية</a>
+
+    <header class="page-header">
+        <h1>موظفو الإنتاج</h1>
+        <p>
+            أضف الموظفين وحدد أنواع التوالف التي يعمل عليها كل موظف.
+            يمكنك اختيار أكثر من نوع للموظف الواحد.
+        </p>
+    </header>
+
+    <div id="pageMessage" class="message" role="status" aria-live="polite"></div>
+
+    <section class="panel">
+        <h2 id="formTitle">إضافة موظف جديد</h2>
+
+        <form id="employeeForm">
+            <label class="field-label" for="employeeName">اسم الموظف</label>
+            <input
+                id="employeeName"
+                class="text-field"
+                type="text"
+                maxlength="150"
+                placeholder="أدخل اسم الموظف"
+                autocomplete="off"
+                required
+            >
+
+            <div style="margin-top:20px;">
+                <label class="field-label">أنواع التوالف المرتبطة بالموظف</label>
+                <p class="help-text">
+                    حدد نوعًا واحدًا أو عدة أنواع. سيظهر الموظف عند اختيار أحد
+                    الأنواع التي تحددها له في نموذج تسجيل التوالف.
+                </p>
+
+                <div id="wasteTypesBox" class="waste-types-box">
+                    <div class="empty-types">جارٍ تحميل أنواع التوالف...</div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button id="saveButton" class="btn btn-primary" type="submit">
+                    إضافة الموظف
+                </button>
+
+                <button
+                    id="cancelButton"
+                    class="btn btn-secondary"
+                    type="button"
+                    hidden
+                >
+                    إلغاء التعديل
+                </button>
+            </div>
+        </form>
+    </section>
+
+    <section class="panel">
+        <h2>قائمة الموظفين</h2>
+
+        <div id="employeeCounter" class="counter">عدد الموظفين: 0</div>
+
+        <label class="field-label" for="searchEmployee">البحث عن موظف</label>
+        <input
+            id="searchEmployee"
+            class="text-field"
+            type="search"
+            placeholder="اكتب اسم الموظف للبحث..."
+            autocomplete="off"
+            style="margin-bottom:14px;"
+        >
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>م</th>
+                        <th>اسم الموظف</th>
+                        <th>أنواع التوالف المرتبطة</th>
+                        <th>الإجراءات</th>
+                    </tr>
+                </thead>
+
+                <tbody id="employeesTableBody">
+                    <tr>
+                        <td colspan="4" class="empty-state">جارٍ تحميل الموظفين...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+
+<script src="../JS/database.js"></script>
+
+<script>
+"use strict";
+
+(function () {
+    const form = document.getElementById("employeeForm");
+    const nameInput = document.getElementById("employeeName");
+    const searchInput = document.getElementById("searchEmployee");
+    const tableBody = document.getElementById("employeesTableBody");
+    const typesBox = document.getElementById("wasteTypesBox");
+    const counter = document.getElementById("employeeCounter");
+    const message = document.getElementById("pageMessage");
+    const formTitle = document.getElementById("formTitle");
+    const saveButton = document.getElementById("saveButton");
+    const cancelButton = document.getElementById("cancelButton");
+
+    let employees = [];
+    let wasteTypes = [];
+    let editingId = null;
+
+    function normalizeName(value) {
+        return String(value || "")
+            .trim()
+            .replace(/\s+/g, " ")
+            .toLocaleLowerCase("ar");
+    }
+
+    function showMessage(text, type) {
+        message.textContent = text;
+        message.className = "message show " + type;
+    }
+
+    function clearMessage() {
+        message.textContent = "";
+        message.className = "message";
+    }
+
+    async function loadData() {
+        employees = await TawalefDB.getAll("employees");
+        wasteTypes = await TawalefDB.getAll("materials");
+
+        employees.sort(function (a, b) {
+            return String(a.name || "").localeCompare(
+                String(b.name || ""),
+                "ar"
+            );
+        });
+
+        wasteTypes.sort(function (a, b) {
+            return String(a.name || "").localeCompare(
+                String(b.name || ""),
+                "ar"
+            );
+        });
+
+        renderWasteTypeOptions();
+        renderEmployees();
+    }
+
+    function getSelectedWasteTypeIds() {
+        return Array.from(
+            typesBox.querySelectorAll('input[type="checkbox"]:checked')
+        ).map(function (checkbox) {
+            return Number(checkbox.value);
+        });
+    }
+
+    function renderWasteTypeOptions(selectedIds) {
+        const selected = (selectedIds || []).map(String);
+        typesBox.innerHTML = "";
+
+        if (wasteTypes.length === 0) {
+            const empty = document.createElement("div");
+            empty.className = "empty-types";
+            empty.textContent =
+                "لا توجد أنواع توالف حتى الآن. أضف الأنواع أولًا من صفحة إدارة أنواع التوالف.";
+            typesBox.appendChild(empty);
+            return;
+        }
+
+        wasteTypes.forEach(function (type) {
+            const label = document.createElement("label");
+            label.className = "waste-type-option";
+
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.value = type.id;
+            checkbox.checked = selected.includes(String(type.id));
+
+            const text = document.createElement("span");
+            text.textContent = type.name || "";
+
+            label.appendChild(checkbox);
+            label.appendChild(text);
+            typesBox.appendChild(label);
+        });
+    }
+
+    function makeButton(text, className, action, id) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.textContent = text;
+        button.className = "btn btn-small " + className;
+
+        button.addEventListener("click", function () {
+            action(id);
+        });
+
+        return button;
+    }
+
+    function renderEmployees() {
+        const query = normalizeName(searchInput.value);
+
+        const filtered = employees.filter(function (employee) {
+            return normalizeName(employee.name).includes(query);
+        });
+
+        counter.textContent =
+            "عدد الموظفين: " + employees.length +
+            (query ? " | نتائج البحث: " + filtered.length : "");
+
+        tableBody.innerHTML = "";
+
+        if (filtered.length === 0) {
+            const row = document.createElement("tr");
+            const cell = document.createElement("td");
+
+            cell.colSpan = 4;
+            cell.className = "empty-state";
+            cell.textContent = query
+                ? "لا توجد أسماء مطابقة للبحث."
+                : "لم تتم إضافة موظفين حتى الآن.";
+
+            row.appendChild(cell);
+            tableBody.appendChild(row);
+            return;
+        }
+
+        filtered.forEach(function (employee, index) {
+            const row = document.createElement("tr");
+
+            const numberCell = document.createElement("td");
+            numberCell.textContent = String(index + 1);
+
+            const nameCell = document.createElement("td");
+            nameCell.textContent = employee.name || "";
+
+            const typesCell = document.createElement("td");
+            const tags = document.createElement("div");
+            tags.className = "type-tags";
+
+            const ids = Array.isArray(employee.wasteTypeIds)
+                ? employee.wasteTypeIds.map(String)
+                : [];
+
+            const linkedTypes = wasteTypes.filter(function (type) {
+                return ids.includes(String(type.id));
+            });
+
+            if (linkedTypes.length === 0) {
+                const noTypes = document.createElement("span");
+                noTypes.textContent = "لم تُحدد أنواع";
+                noTypes.style.color = "#777";
+                tags.appendChild(noTypes);
+            } else {
+                linkedTypes.forEach(function (type) {
+                    const tag = document.createElement("span");
+                    tag.className = "type-tag";
+                    tag.textContent = type.name;
+                    tags.appendChild(tag);
+                });
+            }
+
+            typesCell.appendChild(tags);
+
+            const actionsCell = document.createElement("td");
+
+            actionsCell.appendChild(
+                makeButton("تعديل", "btn-secondary", startEditing, employee.id)
+            );
+
+            actionsCell.appendChild(
+                makeButton("حذف", "btn-danger", deleteEmployee, employee.id)
+            );
+
+            row.appendChild(numberCell);
+            row.appendChild(nameCell);
+            row.appendChild(typesCell);
+            row.appendChild(actionsCell);
+
+            tableBody.appendChild(row);
+        });
+    }
+
+    function resetForm() {
+        editingId = null;
+        form.reset();
+
+        renderWasteTypeOptions([]);
+
+        formTitle.textContent = "إضافة موظف جديد";
+        saveButton.textContent = "إضافة الموظف";
+        cancelButton.hidden = true;
+
+        clearMessage();
+    }
+
+    function startEditing(id) {
+        const employee = employees.find(function (entry) {
+            return Number(entry.id) === Number(id);
+        });
+
+        if (!employee) {
+            showMessage("لم يتم العثور على الموظف المطلوب.", "error");
+            return;
+        }
+
+        editingId = employee.id;
+        nameInput.value = employee.name || "";
+
+        renderWasteTypeOptions(
+            Array.isArray(employee.wasteTypeIds)
+                ? employee.wasteTypeIds
+                : []
+        );
+
+        formTitle.textContent = "تعديل بيانات الموظف";
+        saveButton.textContent = "حفظ التعديلات";
+        cancelButton.hidden = false;
+
+        clearMessage();
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+
+        nameInput.focus();
+    }
+
+    async function deleteEmployee(id) {
+        const employee = employees.find(function (entry) {
+            return Number(entry.id) === Number(id);
+        });
+
+        if (!employee) {
+            showMessage("لم يتم العثور على الموظف المطلوب.", "error");
+            return;
+        }
+
+        try {
+            const records = await TawalefDB.getAll("wastage");
+
+            const isUsed = records.some(function (record) {
+                return String(record.employeeId) === String(employee.id);
+            });
+
+            if (isUsed) {
+                showMessage(
+                    "لا يمكن حذف هذا الموظف لأنه مرتبط بسجلات توالف.",
+                    "error"
+                );
+                return;
+            }
+
+            if (!window.confirm(
+                'هل تريد حذف الموظف "' + employee.name + '"؟'
+            )) {
+                return;
+            }
+
+            await TawalefDB.remove("employees", employee.id);
+
+            if (Number(editingId) === Number(employee.id)) {
+                resetForm();
+            }
+
+            await loadData();
+            showMessage("تم حذف الموظف بنجاح.", "success");
+        } catch (error) {
+            console.error("خطأ في حذف الموظف:", error);
+
+            showMessage(
+                "تعذر حذف الموظف: " +
+                (error.message || "خطأ غير معروف"),
+                "error"
+            );
+        }
+    }
+
+    form.addEventListener("submit", async function (event) {
+        event.preventDefault();
+        clearMessage();
+
+        const name = nameInput.value.trim();
+        const selectedIds = getSelectedWasteTypeIds();
+
+        if (!name) {
+            showMessage("يرجى إدخال اسم الموظف.", "error");
+            nameInput.focus();
+            return;
+        }
+
+        const duplicate = employees.some(function (employee) {
+            return (
+                normalizeName(employee.name) === normalizeName(name) &&
+                Number(employee.id) !== Number(editingId)
+            );
+        });
+
+        if (duplicate) {
+            showMessage("اسم الموظف مسجل بالفعل.", "error");
+            nameInput.focus();
+            return;
+        }
+
+        if (selectedIds.length === 0) {
+            showMessage(
+                "حدد نوع تالف واحدًا على الأقل لربط الموظف به.",
+                "error"
+            );
+            return;
+        }
+
+        saveButton.disabled = true;
+
+        try {
+            if (editingId !== null) {
+                const existing = employees.find(function (employee) {
+                    return Number(employee.id) === Number(editingId);
+                });
+
+                if (!existing) {
+                    throw new Error("الموظف المطلوب تعديله غير موجود.");
+                }
+
+                await TawalefDB.update("employees", editingId, {
+                    name: name,
+                    wasteTypeIds: selectedIds,
+                    updatedAt: new Date().toISOString()
+                });
+
+                resetForm();
+                await loadData();
+
+                showMessage("تم تعديل بيانات الموظف بنجاح.", "success");
+            } else {
+                await TawalefDB.add("employees", {
+                    name: name,
+                    wasteTypeIds: selectedIds,
+                    createdAt: new Date().toISOString()
+                });
+
+                form.reset();
+                renderWasteTypeOptions([]);
+                await loadData();
+
+                showMessage("تمت إضافة الموظف بنجاح.", "success");
+                nameInput.focus();
+            }
+        } catch (error) {
+            console.error("خطأ في حفظ الموظف:", error);
+
+            showMessage(
+                "تعذر حفظ بيانات الموظف: " +
+                (error.message || "خطأ غير معروف"),
+                "error"
+            );
+        } finally {
+            saveButton.disabled = false;
+        }
+    });
+
+    cancelButton.addEventListener("click", resetForm);
+    searchInput.addEventListener("input", renderEmployees);
+
+    async function startPage() {
+        try {
+            await TawalefDB.initialize();
+            await loadData();
+        } catch (error) {
+            console.error("تعذر تشغيل صفحة الموظفين:", error);
+
+            showMessage(
+                "تعذر تشغيل الصفحة: " +
+                (error.message || "خطأ غير معروف"),
+                "error"
+            );
+        }
+    }
+
+    startPage();
+})();
+</script>
+</body>
+</html>

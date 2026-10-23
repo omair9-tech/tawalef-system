@@ -1,0 +1,802 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#17365d">
+    <title>الإعدادات | نظام التوالف</title>
+
+    <link rel="stylesheet" href="../CSS/style.css">
+
+    <style>
+        :root {
+            --primary: #17365d;
+            --primary-light: #244b79;
+            --background: #f3f6fa;
+            --surface: #ffffff;
+            --text: #253247;
+            --muted: #718096;
+            --border: #e1e7ef;
+            --accent: #e9f1fb;
+            --success: #17643a;
+            --danger: #a83232;
+            --radius: 15px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--background);
+            color: var(--text);
+        }
+
+        .settings-container {
+            width: min(100% - 24px, 850px);
+            margin: 0 auto;
+            padding: 18px 0 30px;
+        }
+
+        .page-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 18px;
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: white;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .hero-card {
+            padding: 24px 20px;
+            margin-bottom: 20px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, #17365d, #315e91);
+            color: white;
+            box-shadow: 0 7px 22px rgba(23, 54, 93, 0.12);
+        }
+
+        .hero-icon {
+            font-size: 30px;
+            margin-bottom: 10px;
+        }
+
+        .hero-card h2 {
+            margin: 0 0 10px;
+            font-size: 23px;
+        }
+
+        .hero-card p {
+            margin: 0;
+            color: #e4edf8;
+            font-size: 14px;
+            line-height: 1.9;
+        }
+
+        .settings-section,
+        .developer-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 17px;
+            box-shadow: 0 3px 12px rgba(23, 54, 93, 0.035);
+        }
+
+        .section-heading {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .section-icon {
+            display: grid;
+            place-items: center;
+            flex: 0 0 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: var(--accent);
+            color: var(--primary);
+            font-size: 22px;
+        }
+
+        .section-heading h2 {
+            margin: 2px 0 6px;
+            color: var(--primary);
+            font-size: 18px;
+        }
+
+        .settings-description {
+            margin: 0 0 17px;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.9;
+        }
+
+        .field-group {
+            margin: 16px 0;
+        }
+
+        .field-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .field-group input {
+            display: block;
+            width: 100%;
+            min-height: 47px;
+            padding: 11px 13px;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            background: white;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 16px;
+        }
+
+        .field-group input:focus {
+            outline: 2px solid #b9cde7;
+            border-color: var(--primary);
+        }
+
+        .action-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+            width: 100%;
+            min-height: 48px;
+            padding: 12px 15px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 10px;
+            background: var(--primary);
+            color: white;
+            font-family: inherit;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .action-button:hover {
+            background: var(--primary-light);
+        }
+
+        .action-button.secondary {
+            background: var(--accent);
+            color: var(--primary);
+            border: 1px solid #d7e4f5;
+        }
+
+        .action-button.warning {
+            background: var(--danger);
+            color: white;
+        }
+
+        .action-button:disabled {
+            opacity: 0.6;
+            cursor: wait;
+        }
+
+        .status-message {
+            display: none;
+            padding: 12px;
+            margin-top: 14px;
+            border-radius: 10px;
+            font-size: 13px;
+            line-height: 1.9;
+            overflow-wrap: anywhere;
+        }
+
+        .status-message.success {
+            display: block;
+            color: var(--success);
+            background: #e8f7ee;
+            border: 1px solid #c5ead3;
+        }
+
+        .status-message.error {
+            display: block;
+            color: #922b2b;
+            background: #fdecec;
+            border: 1px solid #f4cccc;
+        }
+
+        .status-message.info {
+            display: block;
+            color: var(--primary);
+            background: var(--accent);
+            border: 1px solid #d7e4f5;
+        }
+
+        .backup-note {
+            margin-top: 14px;
+            padding: 13px;
+            border: 1px solid #e4d6a8;
+            border-radius: 10px;
+            background: #fffbed;
+            color: #65521e;
+            font-size: 13px;
+            line-height: 1.9;
+        }
+
+        .developer-card {
+            text-align: center;
+            padding: 24px 18px;
+        }
+
+        .developer-avatar {
+            display: grid;
+            place-items: center;
+            width: 66px;
+            height: 66px;
+            margin: 0 auto 12px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #17365d, #4777ac);
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .developer-label {
+            margin: 0 0 7px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .developer-name {
+            margin: 0 0 8px;
+            color: var(--primary);
+            font-size: 20px;
+        }
+
+        .developer-description {
+            margin: 0 0 16px;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.9;
+        }
+
+        .developer-phone {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 9px;
+            max-width: 100%;
+            padding: 12px 19px;
+            border: 1px solid #cfe6d7;
+            border-radius: 12px;
+            background: #effaf2;
+            color: #17643a;
+            font-size: 18px;
+            font-weight: bold;
+            text-decoration: none;
+            direction: ltr;
+        }
+
+        .developer-phone:hover {
+            background: #e1f5e7;
+        }
+
+        .developer-call-note {
+            margin: 11px 0 0;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .footer {
+            padding: 15px 10px 25px;
+            color: var(--muted);
+            text-align: center;
+            font-size: 12px;
+            line-height: 1.8;
+        }
+
+        @media (max-width: 480px) {
+            .settings-section {
+                padding: 16px;
+            }
+
+            .hero-card {
+                padding: 21px 17px;
+            }
+
+            .hero-card h2 {
+                font-size: 21px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="top-header">
+    <div class="brand">
+        <div class="brand-icon">⚙</div>
+        <div>
+            <h1>إعدادات النظام</h1>
+            <p>الإعدادات والنسخ الاحتياطي</p>
+        </div>
+    </div>
+</header>
+
+<main class="settings-container">
+
+    <a class="page-back" href="../index.html">
+        <span>→</span>
+        العودة إلى الصفحة الرئيسية
+    </a>
+
+    <section class="hero-card">
+        <div class="hero-icon">⚙️</div>
+        <h2>إعدادات نظام التوالف</h2>
+        <p>
+            تحكم في الإعدادات، واحفظ بياناتك في نسخة احتياطية،
+            واستعدها عند الحاجة بكل سهولة.
+        </p>
+    </section>
+
+    <!-- الإعدادات العامة -->
+    <section class="settings-section">
+        <div class="section-heading">
+            <div class="section-icon">🎚️</div>
+            <div>
+                <h2>الإعدادات العامة</h2>
+                <p class="settings-description">
+                    حدد كمية التوالف المسموح بها افتراضيًا عند تسجيل سجل جديد.
+                </p>
+            </div>
+        </div>
+
+        <div class="field-group">
+            <label for="allowedDefault">
+                المسموح به افتراضيًا (كيلوغرام)
+            </label>
+
+            <input
+                type="number"
+                id="allowedDefault"
+                min="0"
+                step="0.01"
+                value="2"
+                inputmode="decimal"
+            >
+        </div>
+
+        <button class="action-button" id="saveSettings" type="button">
+            <span>💾</span>
+            حفظ الإعدادات
+        </button>
+
+        <div id="settingsStatus" class="status-message" role="status"></div>
+    </section>
+
+    <!-- النسخ الاحتياطي -->
+    <section class="settings-section">
+        <div class="section-heading">
+            <div class="section-icon">🗄️</div>
+            <div>
+                <h2>النسخ الاحتياطي</h2>
+                <p class="settings-description">
+                    أنشئ ملفًا يحتوي على بيانات النظام وإعداداته،
+                    واختر مكان حفظه إذا كانت الميزة مدعومة في هاتفك.
+                </p>
+            </div>
+        </div>
+
+        <button class="action-button" id="exportBackup" type="button">
+            <span>📥</span>
+            إنشاء نسخة احتياطية وحفظها
+        </button>
+
+        <div id="backupStatus" class="status-message" role="status"></div>
+
+        <div class="backup-note">
+            <strong>مهم:</strong>
+            إذا لم يدعم المتصفح اختيار مكان الحفظ، فسيتم تنزيل الملف بالطريقة
+            المعتادة. يمكنك بعدها نقله من مجلد التنزيلات إلى أي مجلد آخر
+            في هاتفك.
+        </div>
+    </section>
+
+    <!-- استعادة النسخة الاحتياطية -->
+    <section class="settings-section">
+        <div class="section-heading">
+            <div class="section-icon">♻️</div>
+            <div>
+                <h2>استعادة نسخة احتياطية</h2>
+                <p class="settings-description">
+                    اختر ملف JSON سابقًا تم إنشاؤه من نظام التوالف.
+                </p>
+            </div>
+        </div>
+
+        <div class="field-group">
+            <label for="backupFile">ملف النسخة الاحتياطية</label>
+            <input
+                type="file"
+                id="backupFile"
+                class="file-input"
+                accept=".json,application/json"
+            >
+        </div>
+
+        <button class="action-button warning" id="restoreBackup" type="button">
+            <span>♻️</span>
+            فحص الملف واستعادة النسخة
+        </button>
+
+        <div id="restoreStatus" class="status-message" role="status"></div>
+
+        <div class="backup-note">
+            <strong>تنبيه:</strong>
+            الاستعادة تستبدل بيانات المخازن الموجودة في ملف النسخة بالبيانات
+            الحالية. احتفظ بنسخة إضافية قبل المتابعة.
+        </div>
+    </section>
+
+    <!-- بيانات المبرمج -->
+    <section class="developer-card">
+        <div class="developer-avatar">م</div>
+
+        <p class="developer-label">تطوير وبرمجة النظام</p>
+        <h2 class="developer-name">م/ عمير نجيب</h2>
+
+        <p class="developer-description">
+            للطلب والاستفسار والتواصل بشأن النظام
+        </p>
+
+        <a
+            class="developer-phone"
+            href="tel:779503801"
+            aria-label="الاتصال بالمبرمج على الرقم 779503801"
+        >
+            <span>📞</span>
+            <span>779503801</span>
+        </a>
+
+        <p class="developer-call-note">
+            اضغط على الرقم لفتح تطبيق الاتصال في هاتفك.
+        </p>
+    </section>
+
+</main>
+
+<footer class="footer">
+    <p>نظام التوالف — الإعدادات والنسخ الاحتياطي</p>
+    <p>تطوير وبرمجة م/ عمير نجيب</p>
+</footer>
+
+<script src="../JS/database.js"></script>
+
+<script>
+"use strict";
+
+const allowedInput = document.getElementById("allowedDefault");
+
+function showStatus(elementId, message, type) {
+    const element = document.getElementById(elementId);
+
+    element.textContent = message;
+    element.className = "status-message " + type;
+}
+
+function hideStatus(elementId) {
+    const element = document.getElementById(elementId);
+
+    element.textContent = "";
+    element.className = "status-message";
+}
+
+async function loadSettings() {
+    try {
+        await TawalefDB.initialize();
+
+        const value = await TawalefDB.getSetting("allowedDefault");
+
+        allowedInput.value = String(
+            value === undefined || value === null ? 2 : value
+        );
+    } catch (error) {
+        showStatus(
+            "settingsStatus",
+            "تعذر تحميل الإعدادات: " +
+            (error.message || "حدث خطأ غير معروف."),
+            "error"
+        );
+    }
+}
+
+/* حفظ الإعدادات */
+document.getElementById("saveSettings").addEventListener(
+    "click",
+    async function () {
+        const rawValue = allowedInput.value.trim();
+        const value = Number(rawValue);
+        const button = this;
+
+        if (
+            rawValue === "" ||
+            !Number.isFinite(value) ||
+            value < 0
+        ) {
+            showStatus(
+                "settingsStatus",
+                "أدخل قيمة رقمية صحيحة لا تقل عن صفر.",
+                "error"
+            );
+            return;
+        }
+
+        button.disabled = true;
+
+        try {
+            await TawalefDB.setSetting("allowedDefault", value);
+
+            showStatus(
+                "settingsStatus",
+                "تم حفظ الإعدادات بنجاح.",
+                "success"
+            );
+        } catch (error) {
+            showStatus(
+                "settingsStatus",
+                "تعذر حفظ الإعدادات: " +
+                (error.message || "حدث خطأ غير معروف."),
+                "error"
+            );
+        } finally {
+            button.disabled = false;
+        }
+    }
+);
+
+/*
+ * تصدير البيانات من خلال الدالة الأصلية في database.js.
+ * نحافظ على صيغة الملف التي ينشئها TawalefDB.exportBackup().
+ */
+function createBackupBlob(backup) {
+    return new Blob(
+        [JSON.stringify(backup, null, 2)],
+        { type: "application/json;charset=utf-8" }
+    );
+}
+
+function makeBackupFilename() {
+    const date = new Date();
+
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    const seconds = String(date.getSeconds()).padStart(2, "0");
+
+    return (
+        "tawalef-backup-" +
+        year + "-" + month + "-" + day + "-" +
+        hours + "-" + minutes + "-" + seconds +
+        ".json"
+    );
+}
+
+/* تنزيل بديل لا يحتاج إلى اختيار مجلد */
+function downloadBackup(blob, filename) {
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = filename;
+    link.style.display = "none";
+
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    setTimeout(function () {
+        URL.revokeObjectURL(url);
+    }, 10000);
+}
+
+/*
+ * محاولة فتح نافذة الحفظ مباشرة عند ضغط المستخدم.
+ * إذا ألغى المستخدم الاختيار أو لم تدعم البيئة هذه الميزة،
+ * يتم الرجوع تلقائيًا إلى التنزيل العادي.
+ */
+document.getElementById("exportBackup").addEventListener(
+    "click",
+    async function () {
+        const button = this;
+        const filename = makeBackupFilename();
+
+        button.disabled = true;
+        hideStatus("backupStatus");
+
+        let savePickerPromise = null;
+        let pickerSupported =
+            typeof window.showSaveFilePicker === "function";
+
+        /*
+         * استدعاء نافذة الحفظ قبل أي await للمحافظة على
+         * صلاحية تفاعل المستخدم في المتصفحات التي تتطلب ذلك.
+         */
+        if (pickerSupported) {
+            try {
+                savePickerPromise = window.showSaveFilePicker({
+                    suggestedName: filename,
+                    types: [
+                        {
+                            description: "نسخة احتياطية لنظام التوالف",
+                            accept: {
+                                "application/json": [".json"]
+                            }
+                        }
+                    ]
+                });
+            } catch (error) {
+                savePickerPromise = Promise.reject(error);
+            }
+        }
+
+        try {
+            showStatus(
+                "backupStatus",
+                "جارٍ تجهيز نسخة احتياطية من قاعدة البيانات...",
+                "info"
+            );
+
+            /*
+             * نستخدم دالة قاعدة البيانات الأصلية بدل بناء
+             * صيغة احتياطية جديدة غير متوافقة معها.
+             */
+            const backup = await TawalefDB.exportBackup();
+            const blob = createBackupBlob(backup);
+
+            if (savePickerPromise) {
+                try {
+                    const fileHandle = await savePickerPromise;
+                    const writable = await fileHandle.createWritable();
+
+                    try {
+                        await writable.write(blob);
+                        await writable.close();
+                    } catch (writeError) {
+                        try {
+                            await writable.abort();
+                        } catch (abortError) {
+                            // تجاهل خطأ الإلغاء، ثم اعرض خطأ الحفظ الأصلي.
+                        }
+
+                        throw writeError;
+                    }
+
+                    showStatus(
+                        "backupStatus",
+                        "تم حفظ النسخة الاحتياطية بنجاح في المكان الذي اخترته.",
+                        "success"
+                    );
+
+                    return;
+                } catch (pickerError) {
+                    /*
+                     * لا نوقف العملية عند إلغاء نافذة الاختيار.
+                     * نحاول تنزيل النسخة بالطريقة التقليدية.
+                     */
+                    try {
+                        downloadBackup(blob, filename);
+
+                        showStatus(
+                            "backupStatus",
+                            pickerError.name === "AbortError"
+                                ? "لم يتم اختيار مجلد للحفظ، لذلك أرسلنا النسخة للتنزيل العادي. تحقق من مجلد التنزيلات في الهاتف."
+                                : "تعذر الحفظ في المكان المختار، لذلك أرسلنا النسخة للتنزيل العادي. تحقق من مجلد التنزيلات في الهاتف.",
+                            "info"
+                        );
+                    } catch (downloadError) {
+                        throw new Error(
+                            "تعذر الحفظ في المكان المختار وكذلك التنزيل: " +
+                            (downloadError.message || "خطأ غير معروف.")
+                        );
+                    }
+
+                    return;
+                }
+            }
+
+            /*
+             * البيئة لا تدعم نافذة اختيار مكان الحفظ.
+             * ننزل الملف مباشرة دون عرض رسالة إلغاء الاختيار.
+             */
+            downloadBackup(blob, filename);
+
+            showStatus(
+                "backupStatus",
+                "تم تجهيز النسخة وإرسالها للتنزيل. افتح مجلد التنزيلات في الهاتف، ثم انقل الملف إلى المجلد الذي تريده.",
+                "success"
+            );
+
+        } catch (error) {
+            showStatus(
+                "backupStatus",
+                "تعذر إنشاء النسخة الاحتياطية: " +
+                (error.message || "حدث خطأ غير معروف."),
+                "error"
+            );
+        } finally {
+            button.disabled = false;
+        }
+    }
+);
+
+/* استعادة النسخة الاحتياطية */
+document.getElementById("restoreBackup").addEventListener(
+    "click",
+    async function () {
+        const fileInput = document.getElementById("backupFile");
+        const file = fileInput.files[0];
+        const button = this;
+
+        if (!file) {
+            showStatus(
+                "restoreStatus",
+                "اختر ملف النسخة الاحتياطية أولًا.",
+                "error"
+            );
+            return;
+        }
+
+        if (!confirm(
+            "تنبيه: ستُستبدل بيانات المخازن الموجودة في الملف بالبيانات الحالية. " +
+            "تأكد من الاحتفاظ بنسخة احتياطية من بياناتك الحالية. هل تريد المتابعة؟"
+        )) {
+            return;
+        }
+
+        button.disabled = true;
+
+        try {
+            await TawalefDB.initialize();
+
+            const fileText = await file.text();
+            const backup = JSON.parse(fileText);
+
+            TawalefDB.validateBackup(backup);
+
+            await TawalefDB.restoreBackup(backup);
+
+            showStatus(
+                "restoreStatus",
+                "تمت استعادة النسخة الاحتياطية بنجاح. أعد تحميل الصفحة لتحديث البيانات المعروضة.",
+                "success"
+            );
+
+            await loadSettings();
+
+        } catch (error) {
+            showStatus(
+                "restoreStatus",
+                "لم تتم الاستعادة: " +
+                (error.message || "تعذر قراءة ملف النسخة الاحتياطية."),
+                "error"
+            );
+        } finally {
+            button.disabled = false;
+        }
+    }
+);
+
+loadSettings();
+</script>
+
+</body>
+</html>
